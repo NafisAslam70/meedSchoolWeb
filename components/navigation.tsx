@@ -3,22 +3,24 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Globe, ChevronDown } from "lucide-react"
+import { Menu, X, Globe, ChevronDown, LockKeyhole } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { type Language, languageLabels, languageShort } from "@/lib/translations"
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
-  const langRef = useRef<HTMLDivElement>(null)
+  const langRefDesktop = useRef<HTMLDivElement>(null)
+  const langRefMobile = useRef<HTMLDivElement>(null)
   const { language, setLanguage, t } = useLanguage()
 
   // Close language dropdown on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (langRef.current && !langRef.current.contains(e.target as Node)) {
-        setLangOpen(false)
-      }
+      const target = e.target as Node
+      const clickedInsideDesktop = langRefDesktop.current?.contains(target)
+      const clickedInsideMobile = langRefMobile.current?.contains(target)
+      if (!clickedInsideDesktop && !clickedInsideMobile) setLangOpen(false)
     }
     document.addEventListener("mousedown", handleClick)
     return () => document.removeEventListener("mousedown", handleClick)
@@ -69,7 +71,7 @@ export default function Navigation() {
             ))}
 
             {/* Language Dropdown - Desktop */}
-            <div ref={langRef} className="relative">
+            <div ref={langRefDesktop} className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-sm font-medium text-gray-700"
@@ -96,6 +98,15 @@ export default function Navigation() {
               )}
             </div>
 
+            {/* Admin icon - Desktop */}
+            <Link
+              href="/admin"
+              className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-gray-700"
+              aria-label="Admin"
+            >
+              <LockKeyhole className="h-4 w-4" />
+            </Link>
+
             <Link href="/register">
               <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium text-sm">
                 {t("Apply Now")}
@@ -106,7 +117,7 @@ export default function Navigation() {
           {/* Mobile Right Side */}
           <div className="flex items-center gap-1.5 lg:hidden">
             {/* Language Dropdown - Mobile */}
-            <div ref={langRef} className="relative">
+            <div ref={langRefMobile} className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
                 className="flex items-center gap-1 px-2 py-1.5 rounded-full border border-gray-200 text-xs font-medium text-gray-700"
@@ -131,6 +142,15 @@ export default function Navigation() {
                 </div>
               )}
             </div>
+
+            {/* Admin icon - Mobile */}
+            <Link
+              href="/admin"
+              className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 text-gray-700 hover:border-emerald-300 hover:bg-emerald-50 transition-colors"
+              aria-label="Admin"
+            >
+              <LockKeyhole className="h-4 w-4" />
+            </Link>
 
             {/* Hamburger */}
             <button className="p-2 -mr-2" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">

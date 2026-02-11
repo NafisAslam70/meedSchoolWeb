@@ -21,12 +21,26 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en")
   const [mounted, setMounted] = useState(false)
 
+  // hydrate from localStorage on first client render
   useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem("language") as Language | null
+      if (stored) {
+        setLanguageState(stored)
+      }
+    } catch {
+      // ignore storage errors
+    }
     setMounted(true)
   }, [])
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang)
+    try {
+      window.localStorage.setItem("language", lang)
+    } catch {
+      // ignore storage errors
+    }
   }, [])
 
   // t() works in two modes:
@@ -34,7 +48,6 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   // 2. t("English", "Hindi", "Urdu", "Bengali") -- inline translations (backward compatible)
   const t = useCallback(
     (en: string, hi?: string, ur?: string, bn?: string) => {
-      if (!mounted) return en
       if (language === "en") return en
       // If inline translations are provided, use them
       if (hi || ur || bn) {
@@ -46,7 +59,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       // Otherwise look up from dictionary
       return getTranslation(en, language)
     },
-    [language, mounted],
+    [language],
   )
 
   return <LanguageContext.Provider value={{ language, setLanguage, t, mounted }}>{children}</LanguageContext.Provider>

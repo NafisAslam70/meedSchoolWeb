@@ -15,3 +15,25 @@ export const registrations = pgTable("registrations", {
 
 export type Registration = typeof registrations.$inferSelect
 export type NewRegistration = typeof registrations.$inferInsert
+
+export const assets = pgTable("assets", {
+  id: serial("id").primaryKey(),
+  page: varchar("page", { length: 100 }).notNull(), // e.g., "home", "about"
+  slot: varchar("slot", { length: 100 }).notNull(), // e.g., "hero_main", "testimonial_bg"
+  url: text("url").notNull(),
+  alt: text("alt"),
+  width: varchar("width", { length: 20 }),
+  height: varchar("height", { length: 20 }),
+  mime: varchar("mime", { length: 100 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+})
+
+export const pageContent = pgTable("page_content", {
+  id: serial("id").primaryKey(),
+  page: varchar("page", { length: 100 }).notNull(),
+  key: varchar("key", { length: 150 }).notNull(), // e.g., "hero_title"
+  value: text("value").notNull(), // JSON string or plain text
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+})
