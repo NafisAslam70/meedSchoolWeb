@@ -12,6 +12,7 @@ export default function Navigation() {
   const [langOpen, setLangOpen] = useState(false)
   const [navData, setNavData] = useState<{
     logoText?: string
+    logoImage?: { image?: any; alt?: string }
     logoSubtext?: string
     navLinks?: { label: string; href: string }[]
     navCta?: { label?: string; href?: string }
@@ -65,9 +66,17 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16 md:h-auto md:py-3">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 min-w-0">
-            <div className="w-9 h-9 md:w-11 md:h-11 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-emerald-200/40">
-              <span className="text-white font-bold text-base md:text-xl">M</span>
-            </div>
+            {navData?.logoImage?.image ? (
+              <img
+                src={`/api/cms/image?ref=${encodeURIComponent(JSON.stringify(navData.logoImage.image))}`}
+                alt={navData.logoImage.alt || navData.logoText || "Logo"}
+                className="w-10 h-10 md:w-12 md:h-12 rounded-xl object-contain bg-white shadow-md shadow-emerald-200/40 p-1 flex-shrink-0"
+              />
+            ) : (
+              <div className="w-9 h-9 md:w-11 md:h-11 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-emerald-200/40">
+                <span className="text-white font-bold text-base md:text-xl">M</span>
+              </div>
+            )}
             <div className="min-w-0">
               <div className="text-sm md:text-lg font-bold text-gray-900 truncate">
                 {navData?.logoText || t("Meed International School")}

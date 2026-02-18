@@ -52,6 +52,7 @@ export const contactQuery = groq`*[_type == "contactPage"][0]{
 
 export const layoutQuery = groq`*[_type == "siteSettings"][0]{
   logoText,
+  logoImage{image, alt},
   logoSubtext,
   navLinks,
   navCta,

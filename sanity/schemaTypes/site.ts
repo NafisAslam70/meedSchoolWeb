@@ -76,6 +76,13 @@ export const siteSettings = defineType({
       group: "navbar",
     }),
     defineField({
+      name: "logoImage",
+      title: "Logo Image",
+      type: "imageWithAlt",
+      description: "Optional logo shown in the navbar; falls back to text monogram if empty.",
+      group: "navbar",
+    }),
+    defineField({
       name: "logoSubtext",
       title: "Logo Subtext / Tagline",
       type: "string",

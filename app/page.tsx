@@ -33,6 +33,22 @@ type CMSHome = {
   stats?: any[]
 }
 
+const WaveTop = ({ color = "white" }: { color?: string }) => (
+  <div className="absolute -top-px left-0 right-0 text-[0] leading-[0]">
+    <svg viewBox="0 0 1440 80" className="w-full h-16 md:h-20" preserveAspectRatio="none">
+      <path d="M0,64 C320,0 640,0 960,64 C1280,128 1440,32 1440,32 L1440,0 L0,0 Z" fill={color} />
+    </svg>
+  </div>
+)
+
+const WaveBottom = ({ color = "white" }: { color?: string }) => (
+  <div className="absolute -bottom-px left-0 right-0 text-[0] leading-[0] rotate-180">
+    <svg viewBox="0 0 1440 80" className="w-full h-16 md:h-20" preserveAspectRatio="none">
+      <path d="M0,64 C320,0 640,0 960,64 C1280,128 1440,32 1440,32 L1440,0 L0,0 Z" fill={color} />
+    </svg>
+  </div>
+)
+
 export default function HomePage() {
   const { t } = useLanguage()
   const [cms, setCms] = useState<CMSHome | null>(null)
