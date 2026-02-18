@@ -10,6 +10,12 @@ import { type Language, languageLabels, languageShort } from "@/lib/translations
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
+  const [navData, setNavData] = useState<{
+    logoText?: string
+    logoSubtext?: string
+    navLinks?: { label: string; href: string }[]
+    navCta?: { label?: string; href?: string }
+  } | null>(null)
   const langRefDesktop = useRef<HTMLDivElement>(null)
   const langRefMobile = useRef<HTMLDivElement>(null)
   const { language, setLanguage, t } = useLanguage()
@@ -26,16 +32,29 @@ export default function Navigation() {
     return () => document.removeEventListener("mousedown", handleClick)
   }, [])
 
-  const navigation = [
-    { name: t("Home"), href: "/" },
-    { name: t("About"), href: "/about" },
-    { name: t("Programs"), href: "/programs" },
-    { name: t("Admissions"), href: "/admissions" },
-    { name: t("Pricing"), href: "/pricing" },
-    { name: t("Events"), href: "/events" },
-    { name: t("Faculty"), href: "/faculty" },
-    { name: t("Contact"), href: "/contact" },
-  ]
+  // Fetch editable nav content from Sanity
+  useEffect(() => {
+    fetch("/api/cms/layout")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.success) setNavData(res.data)
+      })
+      .catch(() => {})
+  }, [])
+
+  const navigation =
+    navData?.navLinks?.length
+      ? navData.navLinks.map((l) => ({ name: l.label, href: l.href }))
+      : [
+          { name: t("Home"), href: "/" },
+          { name: t("About"), href: "/about" },
+          { name: t("Programs"), href: "/programs" },
+          { name: t("Admissions"), href: "/admissions" },
+          { name: t("Pricing"), href: "/pricing" },
+          { name: t("Events"), href: "/events" },
+          { name: t("Faculty"), href: "/faculty" },
+          { name: t("Contact"), href: "/contact" },
+        ]
 
   const languages: Language[] = ["en", "hi", "ur", "bn"]
 
@@ -50,10 +69,10 @@ export default function Navigation() {
             </div>
             <div className="min-w-0">
               <div className="text-xs md:text-lg font-bold text-gray-900 truncate">
-                {t("Meed International School")}
+                {navData?.logoText || t("Meed International School")}
               </div>
               <div className="text-[9px] md:text-xs text-emerald-600 truncate">
-                {t("Holistic Education for Dual Success")}
+                {navData?.logoSubtext || t("Holistic Education for Dual Success")}
               </div>
             </div>
           </Link>
@@ -109,7 +128,7 @@ export default function Navigation() {
 
             <Link href="/register">
               <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium text-sm">
-                {t("Apply Now")}
+                {navData?.navCta?.label || t("Apply Now")}
               </Button>
             </Link>
           </div>
@@ -175,7 +194,7 @@ export default function Navigation() {
               ))}
               <Link href="/register" onClick={() => setIsOpen(false)} className="mt-2">
                 <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-medium text-sm">
-                  {t("Apply Now")}
+                  {navData?.navCta?.label || t("Apply Now")}
                 </Button>
               </Link>
             </div>

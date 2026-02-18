@@ -49,3 +49,18 @@ export const contactQuery = groq`*[_type == "contactPage"][0]{
   headline, subhead, address, phone, email, mapEmbed,
   heroImage{image, alt}
 }`
+
+export const layoutQuery = groq`*[_type == "siteSettings"][0]{
+  logoText,
+  logoSubtext,
+  navLinks,
+  navCta,
+  footerBlurb,
+  quickLinks,
+  programLinks,
+  contactAddress,
+  contactPhone,
+  contactEmail,
+  socials,
+  copyrightText
+}`

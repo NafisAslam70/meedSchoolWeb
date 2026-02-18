@@ -185,23 +185,19 @@ export default function HomePage() {
       <HeroSlider slides={heroSlides} />
 
       {brandVideoEmbed && (
-        <section className="bg-black py-10 md:py-16">
-          <div className="container mx-auto px-4">
-            <div className="max-w-5xl mx-auto">
-              <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl" style={{ aspectRatio: "16/9" }}>
-                <iframe
-                  src={brandVideoEmbed}
-                  title="MEED brand film"
-                  className="absolute inset-0 w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
-              <div className="mt-4 flex items-center justify-between text-sm text-gray-200 px-1">
-                <span className="font-semibold uppercase tracking-wide text-emerald-300">{t("Watch our story")}</span>
-                <span className="text-gray-400">{t("2 min highlight film")}</span>
-              </div>
-            </div>
+        <section className="bg-black">
+          <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
+            <iframe
+              src={brandVideoEmbed}
+              title="MEED brand film"
+              className="absolute inset-0 w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+          <div className="mt-3 md:mt-4 flex items-center justify-between text-sm text-gray-200 px-4 md:px-6">
+            <span className="font-semibold uppercase tracking-wide text-emerald-300">{t("Watch our story")}</span>
+            <span className="text-gray-400">{t("2 min highlight film")}</span>
           </div>
         </section>
       )}

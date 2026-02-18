@@ -4,10 +4,14 @@ import { aboutPage } from "./about"
 import { contactPage } from "./contact"
 import { admissionsPage, pricingPage, programPage } from "./collections"
 import { cta, heroSlide, imageWithAlt, principle, richBlock, stat } from "./objects"
+import { siteSettings, navLink, socialLink } from "./site"
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     // Documents
+    siteSettings,
+    navLink,
+    socialLink,
     homePage,
     aboutPage,
     programPage,
