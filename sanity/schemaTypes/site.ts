@@ -33,7 +33,7 @@ export const siteSettings = defineType({
       { label: "About", href: "/about" },
       { label: "Programs", href: "/programs" },
       { label: "Admissions", href: "/admissions" },
-      { label: "Pricing", href: "/pricing" },
+      { label: "Fees", href: "/pricing" },
       { label: "Faculty", href: "/faculty" },
       { label: "Events", href: "/events" },
       { label: "Contact", href: "/contact" },

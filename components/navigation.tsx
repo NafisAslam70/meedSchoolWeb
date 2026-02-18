@@ -50,7 +50,7 @@ export default function Navigation() {
           { name: t("About"), href: "/about" },
           { name: t("Programs"), href: "/programs" },
           { name: t("Admissions"), href: "/admissions" },
-          { name: t("Pricing"), href: "/pricing" },
+          { name: t("Fees"), href: "/pricing" },
           { name: t("Events"), href: "/events" },
           { name: t("Faculty"), href: "/faculty" },
           { name: t("Contact"), href: "/contact" },
@@ -59,7 +59,8 @@ export default function Navigation() {
   const languages: Language[] = ["en", "hi", "ur", "bn"]
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-white/30 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.35)]">
+    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-white/40 shadow-[0_15px_35px_-20px_rgba(0,0,0,0.35)]">
+      <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 opacity-70" />
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16 md:h-auto md:py-3">
           {/* Logo */}
@@ -83,10 +84,10 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative text-gray-700 hover:text-emerald-700 font-medium transition-colors text-sm whitespace-nowrap group"
+                className="relative text-gray-700 hover:text-emerald-800 font-semibold transition-all text-sm whitespace-nowrap group px-3 py-2 rounded-full hover:bg-emerald-50"
               >
                 {item.name}
-                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-emerald-500 transition-all duration-200 group-hover:w-full" />
+                <span className="absolute left-3 right-3 -bottom-1 h-[2px] bg-gradient-to-r from-emerald-500 to-teal-400 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-200" />
               </Link>
             ))}
 
@@ -128,7 +129,7 @@ export default function Navigation() {
             </Link>
 
             <Link href="/register">
-              <Button className="bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white px-5 py-2 rounded-full font-medium text-sm shadow-md shadow-emerald-200/40 transition-transform hover:-translate-y-0.5">
+              <Button className="bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white px-5 py-2 rounded-full font-semibold text-sm shadow-[0_12px_30px_-15px_rgba(16,185,129,0.7)] transition-transform hover:-translate-y-0.5">
                 {navData?.navCta?.label || t("Apply Now")}
               </Button>
             </Link>

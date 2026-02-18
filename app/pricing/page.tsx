@@ -124,7 +124,7 @@ export default function PricingPage() {
             <Star className="w-4 h-4 mr-2" />
             {cms?.heroSubtitle || "Pre-Primary through Class 8"}
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">{cms?.heroTitle || "Tuition & Fees"}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">{cms?.heroTitle || "Fees & Tuition"}</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
             {cms?.heroSubtitle ||
               "Invest in your child's holistic development. Our programs include comprehensive academic curriculum plus the MEED evaluation framework that tracks character alongside academics."}
