@@ -6,12 +6,21 @@ import { Button } from "@/components/ui/button"
 import { ChevronRight, BookOpen, ChevronLeft } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
-export default function HeroSlider() {
+type Slide = {
+  title: string
+  subtitle: string
+  description: string
+  image?: string
+  primaryCta?: { label: string; href: string }
+  secondaryCta?: { label: string; href: string }
+}
+
+export default function HeroSlider({ slides: slidesProp }: { slides?: Slide[] }) {
   const [current, setCurrent] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const { t } = useLanguage()
 
-  const slides = [
+  const slides: Slide[] = slidesProp && slidesProp.length > 0 ? slidesProp : [
     {
       image: "/images/hero-1.jpg",
       title: t("Nurturing Leaders of Excellence"),
@@ -102,19 +111,19 @@ export default function HeroSlider() {
                   {slide.description}
                 </p>
                 <div className="flex flex-row gap-2 md:gap-3">
-                  <Link href="/register">
+                  <Link href={slide.primaryCta?.href || "/register"}>
                     <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 md:px-8 py-2.5 md:py-4 text-xs md:text-lg font-semibold rounded-xl">
-                      {t("Apply Now")}
+                      {slide.primaryCta?.label || t("Apply Now")}
                       <ChevronRight className="ml-1 h-3.5 w-3.5 md:h-5 md:w-5" />
                     </Button>
                   </Link>
-                  <Link href="/programs">
+                  <Link href={slide.secondaryCta?.href || "/programs"}>
                     <Button
                       variant="outline"
                       className="border-2 border-white text-white hover:bg-white hover:text-emerald-700 bg-transparent px-4 md:px-8 py-2.5 md:py-4 text-xs md:text-lg font-semibold rounded-xl"
                     >
                       <BookOpen className="mr-1 h-3.5 w-3.5 md:h-5 md:w-5" />
-                      {t("Our Programs")}
+                      {slide.secondaryCta?.label || t("Our Programs")}
                     </Button>
                   </Link>
                 </div>

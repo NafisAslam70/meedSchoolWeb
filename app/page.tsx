@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   BookOpen, Phone, Users, Award, Globe, Shield, Lightbulb, Zap, Heart,
@@ -11,14 +12,127 @@ import Footer from "@/components/footer"
 import TestimonialsSection from "@/components/testimonials"
 import HeroSlider from "@/components/hero-slider"
 import { useLanguage } from "@/lib/language-context"
+import { urlFor } from "@/sanity/lib/image"
+
+type CMSHome = {
+  slides?: any[]
+  visionHeadline?: string
+  visionQuote?: string
+  visionCards?: any[]
+  principles?: any[]
+  ecosystemHeadline?: string
+  ecosystemImage?: { image?: any; alt?: string }
+  ecosystemBullets?: any[]
+  executionSteps?: any[]
+  assessmentCards?: any[]
+  assessmentImage?: { image?: any; alt?: string }
+  stats?: any[]
+}
 
 export default function HomePage() {
   const { t } = useLanguage()
+  const [cms, setCms] = useState<CMSHome | null>(null)
+
+  useEffect(() => {
+    fetch("/api/cms/home")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.success) setCms(res.data)
+      })
+      .catch(() => {})
+  }, [])
+
+  const heroSlides = useMemo(() => {
+    if (!cms?.slides?.length) return undefined
+    return cms.slides.map((s) => ({
+      title: s.title || "",
+      subtitle: s.subtitle || "",
+      description: s.description || "",
+      image: s.image?.image ? urlFor(s.image.image).width(1600).height(900).url() : undefined,
+      primaryCta: s.primaryCta ? { label: s.primaryCta.label, href: s.primaryCta.href || "#" } : undefined,
+      secondaryCta: s.secondaryCta ? { label: s.secondaryCta.label, href: s.secondaryCta.href || "#" } : undefined,
+    }))
+  }, [cms])
+
+  const ecosystemImageSrc = cms?.ecosystemImage?.image
+    ? urlFor(cms.ecosystemImage.image).width(1200).height(800).url()
+    : "/placeholder.svg"
+
+  const assessmentImageSrc = cms?.assessmentImage?.image
+    ? urlFor(cms.assessmentImage.image).width(1200).height(800).url()
+    : "/placeholder.svg"
+
+  const visionCards =
+    cms?.visionCards?.length > 0
+      ? cms.visionCards.map((v: any) => ({
+          title: v.title,
+          description: v.description,
+        }))
+      : [
+          { icon: Lightbulb, en: "Enlighten", hi: "ज्ञान", ur: "روشنی", bn: "জ্ঞান", color: "text-emerald-400", dEn: "Students gain both revealed (Islamic) and acquired (worldly) knowledge.", dHi: "छात्र इस्लामी और सांसारिक दोनों ज्ञान प्राप्त करते हैं।", dUr: "طلباء اسلامی اور دنیاوی دونوں علوم حاصل کرتے ہیں۔", dBn: "শিক্ষার্থীরা ইসলামীক ও পার্থিব জ্ঞান অর্জন করে।" },
+          { icon: Zap, en: "Empower", hi: "सशक्तिकरण", ur: "بااختیار", bn: "ক্ষমতায়ন", color: "text-teal-400", dEn: "Equip learners with 21st-century skills and rituals of mastery.", dHi: "शिक्षार्थियों को 21वीं सदी के कौशल और अभ्यास दें।", dUr: "طلباء کو 21ویں صدی کے مہارتیں دیں۔", dBn: "২১ শতকের দক্ষতায় সজ্জিত করুন।" },
+          { icon: Shield, en: "Dedicate", hi: "समर्पण", ur: "عزم", bn: "নিষ্ঠা", color: "text-cyan-400", dEn: "Ground hearts in discipline, Ibadah, and sustained focus.", dHi: "अनुशासन और इबादत में दिल मजबूत करें।", dUr: "نظم و ضبط اور عبادت میں دل مضبوط کریں۔", dBn: "শৃঙ্খলা ও ইবাদতে মন স্থির করুন।" },
+          { icon: Award, en: "Master", hi: "मास्टरी", ur: "مہارت", bn: "দক্ষতা", color: "text-yellow-400", dEn: "Achieve excellence in spiritual and worldly domains.", dHi: "आध्यात्मिक और सांसारिक क्षेत्रों में उत्कृष्टता।", dUr: "روحانی و دنیاوی میدان میں عمدگی۔", dBn: "আধ্যাত্মিক ও পার্থিব উৎকর্ষ।" },
+        ]
+
+  const principles =
+    cms?.principles?.length > 0
+      ? cms.principles.map((p: any) => ({
+          title: p.title,
+          description: p.description,
+        }))
+      : [
+          { icon: Eye, en: "Vision", hi: "दृष्टि", ur: "وژن", bn: "দৃষ্টি", dEn: "Clarity of purpose guides every decision.", bg: "bg-emerald-100", color: "text-emerald-600" },
+          { icon: Heart, en: "Sincerity", hi: "ईमानदारी", ur: "اخلاص", bn: "আন্তরিকতা", dEn: "Ikhlas and objectivity form our ethical backbone.", bg: "bg-teal-100", color: "text-teal-600" },
+          { icon: Search, en: "Depth", hi: "गहराई", ur: "گہرائی", bn: "গভীরতা", dEn: "Profound understanding over superficial coverage.", bg: "bg-cyan-100", color: "text-cyan-600" },
+          { icon: Repeat, en: "Ritual", hi: "अनुष्ठान", ur: "رسومات", bn: "অনুষ্ঠান", dEn: "Consistent practices build sustainable excellence.", bg: "bg-emerald-100", color: "text-emerald-600" },
+          { icon: Shield, en: "Perseverance", hi: "दृढ़ता", ur: "استقامت", bn: "দৃঢ়তা", dEn: "Resilience transforms potential into achievement.", bg: "bg-teal-100", color: "text-teal-600" },
+        ]
+
+  const ecosystemBullets =
+    cms?.ecosystemBullets?.length > 0
+      ? cms.ecosystemBullets.map((b: any) => ({ title: b.title, description: b.description }))
+      : [
+          { icon: BookOpen, bg: "bg-emerald-100", color: "text-emerald-600", en: "Academic MRIs (AMRI)", dEn: "MSP, MHCP, Assembly, and Day Open/Shutdown rituals." },
+          { icon: Users, bg: "bg-teal-100", color: "text-teal-600", en: "Non-Academic MRIs (NMRI)", dEn: "Blitz windows, recreation, PowerNap, spiritual anchors." },
+          { icon: Clock, bg: "bg-cyan-100", color: "text-cyan-600", en: "17 Micro-Rituals, 7 Daily Blocks", dEn: "From pre-Fajr to lights-out, every block has purpose." },
+        ]
+
+  const executionSteps =
+    cms?.executionSteps?.length > 0
+      ? cms.executionSteps.map((s: any) => ({ title: s.title, description: s.description }))
+      : [
+          { icon: Target, en: "Rooting", dEn: "Research-based methodologies" },
+          { icon: Play, en: "Initiating", dEn: "Prepare and deliver materials" },
+          { icon: Zap, en: "Acting x 3", dEn: "Consistent action over talk" },
+          { icon: Search, en: "Tracking", dEn: "Log evidence via AUP/APD" },
+          { icon: Repeat, en: "Repeating", dEn: "Daily, weekly, monthly iteration" },
+        ]
+
+  const assessmentCards =
+    cms?.assessmentCards?.length > 0
+      ? cms.assessmentCards.map((a: any) => ({ title: a.title, description: a.description }))
+      : [
+          { en: "Scholastic", dEn: "Subject mastery, TCS Cycle, Mid-Term and Term-End Exams", bg: "bg-emerald-50" },
+          { en: "Co-Scholastic", dEn: "Character, habits, spiritual formation", bg: "bg-teal-50" },
+          { en: "TCS Cycle", dEn: "Test, Correction, Submission -- every chapter", bg: "bg-cyan-50" },
+          { en: "T1-T4 Bands", dEn: "Mastery to Foundation -- targeted guidance", bg: "bg-gray-50" },
+        ]
+
+  const stats =
+    cms?.stats?.length > 0
+      ? cms.stats.map((s: any) => ({ value: s.value, label: s.label }))
+      : [
+          { vEn: "Nursery-8", lEn: "Grade Levels" },
+          { vEn: "17", lEn: "Daily Micro-Rituals" },
+          { vEn: "5", lEn: "Guiding Principles" },
+          { vEn: "Dual", lEn: "Success Model" },
+        ]
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <HeroSlider />
+      <HeroSlider slides={heroSlides} />
 
       {/* Vision & Mission */}
       <section className="py-12 md:py-20 bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white">
@@ -115,7 +229,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="w-full lg:w-1/2">
-              <img src="/images/hero-2.jpg" alt="MEED Daily Rituals" className="rounded-xl md:rounded-2xl shadow-xl w-full" />
+              <img src={ecosystemImageSrc} alt="MEED Daily Rituals" className="rounded-xl md:rounded-2xl shadow-xl w-full" />
             </div>
           </div>
         </div>
@@ -152,7 +266,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col-reverse lg:flex-row gap-8 md:gap-12 items-center max-w-6xl mx-auto">
             <div className="w-full lg:w-1/2">
-              <img src="/images/hero-4.jpg" alt="Holistic Report Card" className="rounded-xl md:rounded-2xl shadow-xl w-full" />
+              <img src={assessmentImageSrc} alt="Holistic Report Card" className="rounded-xl md:rounded-2xl shadow-xl w-full" />
             </div>
             <div className="w-full lg:w-1/2">
               <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-balance">
