@@ -32,13 +32,15 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="container mx-auto px-4 py-8 md:py-12">
+    <footer className="relative bg-slate-950 text-white overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.15),transparent_35%),radial-gradient(circle_at_80%_80%,rgba(45,212,191,0.14),transparent_35%)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent" />
+      <div className="container mx-auto px-4 py-10 md:py-14 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {/* School Info */}
           <div className="col-span-2 md:col-span-1 space-y-3 md:space-y-4">
             <div className="flex items-center gap-2 md:gap-3">
-              <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 ring-1 ring-white/20">
                 <span className="text-white font-bold text-sm md:text-base">M</span>
               </div>
               <div className="min-w-0">
@@ -68,7 +70,7 @@ export default function Footer() {
                   <Link
                     key={idx}
                     href={s.url || "#"}
-                    className="text-gray-400 hover:text-emerald-400 cursor-pointer transition-colors"
+                    className="text-gray-400 hover:text-emerald-300 cursor-pointer transition-colors"
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -100,7 +102,7 @@ export default function Footer() {
                     { href: "/contact", label: t("Contact") },
                   ]
               ).map((link, idx) => (
-                <Link key={link.href} href={link.href} className="block text-gray-300 hover:text-emerald-400 transition-colors text-xs md:text-sm">
+                <Link key={link.href} href={link.href} className="block text-gray-300 hover:text-emerald-300 transition-colors text-xs md:text-sm">
                   {pickLocalizedText(language, link.labelI18n, link.label)}
                 </Link>
               ))}
@@ -120,7 +122,7 @@ export default function Footer() {
                     { label: t("Baseline & Banding (T1-T4)"), href: "/programs" },
                   ]
               ).map((p, i) => (
-                <Link key={i} href={p.href} className="block text-gray-300 hover:text-emerald-400 transition-colors text-xs md:text-sm">
+                <Link key={i} href={p.href} className="block text-gray-300 hover:text-emerald-300 transition-colors text-xs md:text-sm">
                   {pickLocalizedText(language, p.labelI18n, p.label)}
                 </Link>
               ))}
@@ -147,7 +149,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-6 md:mt-8 pt-6 md:pt-8 text-center">
+        <div className="border-t border-white/10 mt-8 md:mt-10 pt-6 md:pt-8 text-center">
           <p className="text-gray-400 text-xs md:text-sm">
             {pickLocalizedText(language, footerData?.copyrightTextI18n, footerData?.copyrightText || `\u00a9 2025 Meed International School. ${t("All rights reserved.")}`)}
           </p>

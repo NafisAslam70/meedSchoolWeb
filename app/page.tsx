@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   BookOpen, Phone, Users, Award, Globe, Shield, Lightbulb, Zap, Heart,
-  Eye, Target, Repeat, Play, Search, Clock,
+  Eye, Repeat, Search, Clock,
 } from "lucide-react"
 import { GallerySlider } from "@/components/gallery-slider"
 import Navigation from "@/components/navigation"
@@ -27,7 +27,6 @@ type CMSHome = {
   ecosystemImage?: { image?: any; alt?: string }
   ecosystemGallery?: any[]
   ecosystemBullets?: any[]
-  executionSteps?: any[]
   assessmentCards?: any[]
   assessmentImage?: { image?: any; alt?: string }
   assessmentGallery?: any[]
@@ -53,6 +52,8 @@ const WaveBottom = ({ color = "white" }: { color?: string }) => (
 export default function HomePage() {
   const { t, language } = useLanguage()
   const [cms, setCms] = useState<CMSHome | null>(null)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [activeSection, setActiveSection] = useState("Hero")
 
   useEffect(() => {
     fetch("/api/cms/home")
@@ -61,6 +62,33 @@ export default function HomePage() {
         if (res.success) setCms(res.data)
       })
       .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const onScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      const next = max > 0 ? (window.scrollY / max) * 100 : 0
+      setScrollProgress(Math.min(100, Math.max(0, next)))
+    }
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-section-label]"))
+    if (!sections.length) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+        if (visible) setActiveSection(visible.target.getAttribute("data-section-label") || "Home")
+      },
+      { threshold: [0.25, 0.5, 0.75], rootMargin: "-15% 0px -45% 0px" }
+    )
+    sections.forEach((s) => observer.observe(s))
+    return () => observer.disconnect()
   }, [])
 
   useEffect(() => {
@@ -102,24 +130,6 @@ export default function HomePage() {
         : undefined,
     }))
   }, [cms, language])
-
-  const brandVideoEmbed = useMemo(() => {
-    if (!cms?.videoUrl) return null
-    try {
-      const u = new URL(cms.videoUrl)
-      const host = u.hostname
-      let id = ""
-      if (host.includes("youtu.be")) {
-        id = u.pathname.slice(1)
-      } else if (host.includes("youtube.com")) {
-        id = u.searchParams.get("v") || u.pathname.split("/").pop() || ""
-      }
-      if (!id) return null
-      return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`
-    } catch {
-      return null
-    }
-  }, [cms?.videoUrl])
 
   const ecosystemGallery = useMemo(() => {
     if (cms?.ecosystemGallery?.length) {
@@ -196,20 +206,6 @@ export default function HomePage() {
           { icon: Clock, bg: "bg-cyan-100", color: "text-cyan-600", en: "17 Micro-Rituals, 7 Daily Blocks", dEn: "From pre-Fajr to lights-out, every block has purpose." },
         ]
 
-  const executionSteps =
-    cms?.executionSteps?.length > 0
-      ? cms.executionSteps.map((s: any) => ({
-          title: pickLocalizedText(language, s.titleI18n, s.title),
-          description: pickLocalizedText(language, s.descriptionI18n, s.description),
-        }))
-      : [
-          { icon: Target, en: "Rooting", dEn: "Research-based methodologies" },
-          { icon: Play, en: "Initiating", dEn: "Prepare and deliver materials" },
-          { icon: Zap, en: "Acting x 3", dEn: "Consistent action over talk" },
-          { icon: Search, en: "Tracking", dEn: "Log evidence via AUP/APD" },
-          { icon: Repeat, en: "Repeating", dEn: "Daily, weekly, monthly iteration" },
-        ]
-
   const assessmentCards =
     cms?.assessmentCards?.length > 0
       ? cms.assessmentCards.map((a: any) => ({
@@ -233,33 +229,31 @@ export default function HomePage() {
           { vEn: "Dual", lEn: "Success Model" },
         ]
 
+  const storyImages = useMemo(() => {
+    const hero = (heroSlides || [])
+      .map((s: any) => s.image)
+      .filter(Boolean)
+      .map((src: string, i: number) => ({ src, alt: `Hero visual ${i + 1}` }))
+    const merged = [...hero, ...ecosystemGallery, ...assessmentGallery]
+    return merged.filter((img, i, arr) => arr.findIndex((x) => x.src === img.src) === i).slice(0, 8)
+  }, [heroSlides, ecosystemGallery, assessmentGallery])
+
   return (
     <div className="min-h-screen bg-background">
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 md:hidden rounded-full border border-white/60 bg-white/85 backdrop-blur-xl px-4 py-2 shadow-lg">
+        <div className="text-[11px] font-semibold text-slate-700 text-center">{activeSection}</div>
+        <div className="mt-1 h-1 w-28 bg-slate-200 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400" style={{ width: `${scrollProgress}%` }} />
+        </div>
+      </div>
       <Navigation />
-      <HeroSlider slides={heroSlides} />
-
-      {brandVideoEmbed && (
-        <section className="bg-black">
-          <div className="relative w-full" style={{ aspectRatio: "16/9" }}>
-            <iframe
-              src={brandVideoEmbed}
-              title="MEED brand film"
-              className="absolute inset-0 w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
-          <div className="mt-3 md:mt-4 flex items-center justify-between text-sm text-gray-200 px-4 md:px-6">
-            <span className="font-semibold uppercase tracking-wide text-emerald-300">{t("Watch our story")}</span>
-            <span className="text-gray-400">{t("2 min highlight film")}</span>
-          </div>
-        </section>
-      )}
+      <div data-section-label="Hero">
+        <HeroSlider slides={heroSlides} />
+      </div>
 
 
       {/* Vision & Mission */}
-      <section className="relative py-14 md:py-24 bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white overflow-hidden reveal-on-scroll" data-reveal>
-        <WaveTop color="#0f172a" />
+      <section className="relative py-14 md:py-24 bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white overflow-hidden reveal-on-scroll" data-reveal data-section-label="Vision">
         <WaveBottom color="#f8fafc" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(16,185,129,0.18),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(20,184,166,0.16),transparent_35%)]" />
         <div className="container mx-auto px-4 relative z-10">
@@ -285,7 +279,7 @@ export default function HomePage() {
                   <h3 className={`text-sm md:text-lg font-bold ${item.color || "text-emerald-400"} mb-1 md:mb-2`}>
                     {t(item.title || item.en || "")}
                   </h3>
-                  <p className="text-gray-300 text-xs md:text-sm leading-relaxed hidden sm:block">
+                  <p className="text-gray-300 text-xs md:text-sm leading-relaxed line-clamp-2">
                     {t(item.description || item.dEn || "")}
                   </p>
                 </div>
@@ -296,17 +290,24 @@ export default function HomePage() {
       </section>
 
       {/* Five Guiding Principles */}
-      <section className="relative py-14 md:py-20 bg-gray-50 overflow-hidden reveal-on-scroll" data-reveal>
+      <section className="relative py-14 md:py-20 bg-gray-50 overflow-hidden reveal-on-scroll" data-reveal data-section-label="Principles">
         <WaveTop color="#f8fafc" />
         <WaveBottom color="#ecfeff" />
         <div className="container mx-auto px-4 relative z-10">
+          {storyImages.length > 4 && (
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3 max-w-6xl mx-auto mb-8 md:mb-10">
+              {storyImages.slice(2, 8).map((img) => (
+                <div key={img.src} className="rounded-xl overflow-hidden">
+                  <img src={img.src} alt={img.alt} className="h-20 md:h-24 w-full object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
           <div className="text-center mb-10 md:mb-14">
             <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4 text-balance">
               {t("Five Guiding Principles")}
             </h2>
-            <p className="text-sm md:text-base text-gray-600 max-w-3xl mx-auto">
-              {t("A flowing sequence from vision to perseverance, lived every day.")}
-            </p>
+            <p className="text-sm text-gray-600 max-w-2xl mx-auto">{t("Simple principles. Daily practice.")}</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6 max-w-6xl mx-auto">
             {principles.map((p: any, i: number) => {
@@ -322,7 +323,7 @@ export default function HomePage() {
                     <Icon className={`h-5 w-5 md:h-7 md:w-7 ${p.color || "text-emerald-700"}`} />
                   </div>
                   <h3 className="text-sm md:text-lg font-bold text-gray-900 mb-1 md:mb-2">{p.title || t(p.en || "")}</h3>
-                  <p className="text-gray-600 text-xs md:text-sm leading-relaxed">{p.description || t(p.dEn || "")}</p>
+                  <p className="text-gray-600 text-xs md:text-sm leading-relaxed hidden md:block line-clamp-2">{p.description || t(p.dEn || "")}</p>
                 </div>
               )
             })}
@@ -331,21 +332,17 @@ export default function HomePage() {
       </section>
 
       {/* Full-Day Ecosystem */}
-      <section className="relative py-14 md:py-22 bg-gradient-to-b from-emerald-50 via-white to-white reveal-on-scroll" data-reveal>
+      <section className="relative py-14 md:py-22 bg-gradient-to-b from-emerald-50 via-white to-white reveal-on-scroll" data-reveal data-section-label="Ecosystem">
         <WaveTop color="#ecfeff" />
+        <WaveBottom color="#f8fafc" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex flex-col lg:flex-row gap-10 md:gap-14 items-center max-w-6xl mx-auto">
             <div className="w-full lg:w-1/2 space-y-4 md:space-y-5">
               <h2 className="text-2xl md:text-4xl font-bold text-gray-900 text-balance">
                 {pickLocalizedText(language, cms?.ecosystemHeadlineI18n, cms?.ecosystemHeadline || "A Full-Day Ecosystem of Growth")}
               </h2>
-              <p className="text-sm md:text-lg text-gray-600 leading-relaxed">
-                {t(
-                  "MEED is not a morning-only or half-day programme. We provide a complete educational ecosystem structured by MEED Rituals Imaging (MRI).",
-                  "MEED केवल सुबह या आधे दिन का कार्यक्रम नहीं है। हम MRI द्वारा संरचित एक संपूर्ण शैक्षणिक पारिस्थितिकी तंत्र प्रदान करते हैं।",
-                  "MEED صرف صبح یا آدھے دن کا پروگرام نہیں۔ ہم MRI کے ذریعے مکمل تعلیمی ماحولیاتی نظام فراہم کرتے ہیں۔",
-                  "MEED শুধু সকাল বা অর্ধেক দিনের প্রোগ্রাম নয়। আমরা MRI দ্বারা সংরচিত সম্পূর্ণ শিক্ষাগত পরিবেশ প্রদান করি।"
-                )}
+              <p className="text-sm md:text-base text-gray-600 leading-relaxed line-clamp-2 md:line-clamp-3">
+                {t("A full-day learning ecosystem with clear rhythm, rituals, and outcomes.")}
               </p>
               <div className="space-y-3 md:space-y-4">
                 {ecosystemBullets.map((item: any, i: number) => {
@@ -357,7 +354,7 @@ export default function HomePage() {
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-900 text-sm md:text-base">{t(item.title || item.en || "")}</h4>
-                        <p className="text-gray-600 text-xs md:text-sm">{t(item.description || item.dEn || "")}</p>
+                        <p className="text-gray-600 text-xs md:text-sm hidden md:block line-clamp-2">{t(item.description || item.dEn || "")}</p>
                       </div>
                     </div>
                   )
@@ -376,43 +373,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Execution Formula */}
-      <section className="relative py-14 md:py-20 bg-gradient-to-r from-emerald-600 to-teal-600 overflow-hidden reveal-on-scroll" data-reveal>
-        <WaveTop color="#ffffff" />
-        <WaveBottom color="#f8fafc" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-10 md:mb-14">
-            <h2 className="text-2xl md:text-4xl font-bold text-white mb-3 md:mb-4 text-balance">
-              {t("Execution First: Our Operating Formula")}
-            </h2>
-            <p className="text-emerald-100 text-sm md:text-base">
-              {t("A ritualized cadence that keeps students always moving forward.")}
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 max-w-5xl mx-auto">
-            {executionSteps.map((item: any, i: number) => {
-              const Icon = item.icon || Target
-              return (
-                <div
-                  key={i}
-                  data-reveal
-                  data-reveal-delay={i * 70}
-                  className={`bg-white/10 border border-white/20 rounded-xl p-4 md:p-5 text-center backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white/15 interactive-lift reveal-on-scroll ${
-                    i === 4 ? "col-span-2 md:col-span-1" : ""
-                  }`}
-                >
-                  <Icon className="h-6 w-6 md:h-8 md:w-8 text-white mx-auto mb-2 md:mb-3" />
-                  <h3 className="text-white font-bold mb-1 text-xs md:text-sm">{t(item.title || item.en || "")}</h3>
-                  <p className="text-emerald-100 text-[10px] md:text-xs leading-relaxed">{t(item.description || item.dEn || "")}</p>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
       {/* Holistic Evaluation */}
-      <section className="relative py-14 md:py-22 bg-gradient-to-b from-white via-slate-50 to-emerald-50 overflow-hidden reveal-on-scroll" data-reveal>
+      <section className="relative py-14 md:py-22 bg-gradient-to-b from-white via-slate-50 to-emerald-50 overflow-hidden reveal-on-scroll" data-reveal data-section-label="Assessment">
         <WaveTop color="#f8fafc" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="flex flex-col-reverse lg:flex-row gap-10 md:gap-14 items-center max-w-6xl mx-auto">
@@ -429,12 +391,7 @@ export default function HomePage() {
                 {t("What Gets Assessed Gets Attention")}
               </h2>
               <p className="text-sm md:text-lg text-gray-600 mb-5 md:mb-6 leading-relaxed">
-                {t(
-                  "MEED blends continuous and periodic evaluation across both scholastic and co-scholastic growth.",
-                  "MEED शैक्षणिक और सह-शैक्षणिक दोनों विकास में निरंतर और आवधिक मूल्यांकन का मिश्रण करता है।",
-                  "MEED تعلیمی اور شریک تعلیمی دونوں ترقی میں مسلسل اور وقفہ وار جائزے کا امتزاج کرتا ہے۔",
-                  "MEED শিক্ষাগত ও সহ-শিক্ষাগত উভয় বৃদ্ধিতে ধারাবাহিক ও পর্যায়ক্রমিক মূল্যায়ন মিশ্রিত করে।"
-                )}
+                {t("Track growth continuously across academics, habits, and character.")}
               </p>
               <div className="grid grid-cols-2 gap-3 md:gap-4">
                 {assessmentCards.map((item: any, i: number) => (
@@ -445,7 +402,7 @@ export default function HomePage() {
                     className={`${item.bg || "bg-emerald-50"} rounded-lg md:rounded-xl p-3 md:p-5 shadow-sm border border-gray-100 interactive-lift reveal-on-scroll`}
                   >
                     <h4 className="font-bold text-gray-900 mb-1 text-xs md:text-sm">{t(item.title || item.en || "")}</h4>
-                    <p className="text-gray-600 text-[10px] md:text-xs leading-relaxed">{t(item.description || item.dEn || "")}</p>
+                    <p className="text-gray-600 text-[10px] md:text-xs leading-relaxed hidden md:block line-clamp-2">{t(item.description || item.dEn || "")}</p>
                   </div>
                 ))}
               </div>
@@ -455,7 +412,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats */}
-      <section className="relative py-12 md:py-16 bg-gradient-to-r from-slate-800 to-slate-900 text-white overflow-hidden reveal-on-scroll" data-reveal>
+      <section className="relative py-12 md:py-16 bg-gradient-to-r from-slate-800 to-slate-900 text-white overflow-hidden reveal-on-scroll" data-reveal data-section-label="Stats">
         <WaveTop color="#ecfeff" />
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
@@ -474,8 +431,17 @@ export default function HomePage() {
         </div>
       </section>
       {/* Why Choose Us */}
-      <section className="py-12 md:py-20 bg-gray-50 reveal-on-scroll" data-reveal>
+      <section className="py-12 md:py-20 bg-gray-50 reveal-on-scroll" data-reveal data-section-label="Why Meed">
         <div className="container mx-auto px-4">
+          {storyImages.length > 2 && (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 max-w-6xl mx-auto mb-8 md:mb-12">
+              {storyImages.slice(0, 3).map((img, i) => (
+                <div key={`${img.src}-${i}`} className="rounded-2xl overflow-hidden shadow-md">
+                  <img src={img.src} alt={img.alt} className="w-full h-40 md:h-56 object-cover transition-transform duration-700 hover:scale-105" />
+                </div>
+              ))}
+            </div>
+          )}
           <div className="text-center mb-10 md:mb-16">
             <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4 text-balance">
               {t("Why Choose Meed International?", "\u092E\u0940\u0921 \u0907\u0902\u091F\u0930\u0928\u0947\u0936\u0928\u0932 \u0915\u094D\u092F\u094B\u0902 \u091A\u0941\u0928\u0947\u0902?", "\u0645\u06CC\u0688 \u0627\u0646\u0679\u0631\u0646\u06CC\u0634\u0646\u0644 \u06A9\u06CC\u0648\u06BA?", "\u09AE\u09C0\u09A1 \u0987\u09A8\u09CD\u099F\u09BE\u09B0\u09A8\u09CD\u09AF\u09BE\u09B6\u09A8\u09BE\u09B2 \u0995\u09C7\u09A8?")}
@@ -497,7 +463,7 @@ export default function HomePage() {
                   <item.icon className="h-6 w-6 md:h-8 md:w-8 text-white" />
                 </div>
                 <h3 className="text-base md:text-xl font-bold text-gray-900 mb-2 md:mb-4">{t(item.en, item.hi, item.ur, item.bn)}</h3>
-                <p className="text-gray-600 text-xs md:text-base">{t(item.dEn, item.dHi, item.dUr, item.dBn)}</p>
+                <p className="text-gray-600 text-xs md:text-sm line-clamp-2">{t(item.dEn, item.dHi, item.dUr, item.dBn)}</p>
               </div>
             ))}
           </div>
@@ -507,18 +473,13 @@ export default function HomePage() {
       <TestimonialsSection />
 
       {/* CTA */}
-      <section className="py-12 md:py-20 bg-gradient-to-r from-emerald-600 to-teal-600 reveal-on-scroll" data-reveal>
+      <section className="py-12 md:py-20 bg-gradient-to-r from-emerald-600 to-teal-600 reveal-on-scroll" data-reveal data-section-label="Apply">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-xl md:text-4xl font-bold text-white mb-3 md:mb-4 text-balance">
             {t("A Deserved Reward Earned Through Virtue, Effort, and Excellence")}
           </h2>
           <p className="text-sm md:text-xl text-emerald-100 mb-6 md:mb-8 px-2">
-            {t(
-              "Join an educational movement that refuses to choose between worldly success and spiritual depth.",
-              "\u090F\u0915 \u0910\u0938\u0947 \u0936\u0948\u0915\u094D\u0937\u093F\u0915 \u0906\u0902\u0926\u094B\u0932\u0928 \u0938\u0947 \u091C\u0941\u0921\u093C\u0947\u0902 \u091C\u094B \u0938\u093E\u0902\u0938\u093E\u0930\u093F\u0915 \u0938\u092B\u0932\u0924\u093E \u0914\u0930 \u0906\u0927\u094D\u092F\u093E\u0924\u094D\u092E\u093F\u0915 \u0917\u0939\u0930\u093E\u0908 \u0926\u094B\u0928\u094B\u0902 \u0915\u094B \u091A\u0941\u0928\u0924\u093E \u0939\u0948\u0964",
-              "\u0627\u06CC\u06A9 \u0627\u06CC\u0633\u06CC \u062A\u0639\u0644\u06CC\u0645\u06CC \u062A\u062D\u0631\u06CC\u06A9 \u0645\u06CC\u06BA \u0634\u0627\u0645\u0644 \u06C1\u0648\u06BA \u062C\u0648 \u062F\u0646\u06CC\u0627\u0648\u06CC \u06A9\u0627\u0645\u06CC\u0627\u0628\u06CC \u0627\u0648\u0631 \u0631\u0648\u062D\u0627\u0646\u06CC \u06AF\u06C1\u0631\u0627\u0626\u06CC \u062F\u0648\u0646\u0648\u06BA \u06A9\u0648 \u0686\u0646\u062A\u06CC \u06C1\u06D2\u06D4",
-              "\u098F\u09AE\u09A8 \u098F\u0995\u099F\u09BF \u09B6\u09BF\u0995\u09CD\u09B7\u09BE \u0986\u09A8\u09CD\u09A6\u09CB\u09B2\u09A8\u09C7 \u09AF\u09CB\u0997 \u09A6\u09BF\u09A8 \u09AF\u09BE \u09AA\u09BE\u09B0\u09CD\u09A5\u09BF\u09AC \u09B8\u09BE\u09AB\u09B2\u09CD\u09AF \u0993 \u0986\u09A7\u09CD\u09AF\u09BE\u09A4\u09CD\u09AE\u09BF\u0995 \u0997\u09AD\u09C0\u09B0\u09A4\u09BE \u0989\u09AD\u09AF\u09BC\u0987 \u09AC\u09C7\u099B\u09C7 \u09A8\u09C7\u09AF\u09BC\u0964"
-            )}
+            {t("A school experience designed for real growth in both worlds.")}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/register">

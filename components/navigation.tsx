@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Globe, ChevronDown, LockKeyhole } from "lucide-react"
+import { Menu, X, Globe, ChevronDown, PhoneCall, MessageCircle, ArrowUpRight } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { type Language, languageLabels, languageShort } from "@/lib/translations"
 import { urlFor } from "@/sanity/lib/image"
@@ -20,6 +20,7 @@ export default function Navigation() {
     logoSubtextI18n?: { en?: string; hi?: string; ur?: string; bn?: string }
     navLinks?: { label: string; labelI18n?: { en?: string; hi?: string; ur?: string; bn?: string }; href: string }[]
     navCta?: { label?: string; labelI18n?: { en?: string; hi?: string; ur?: string; bn?: string }; href?: string }
+    contactPhone?: string
   } | null>(null)
   const langRefDesktop = useRef<HTMLDivElement>(null)
   const langRefMobile = useRef<HTMLDivElement>(null)
@@ -62,45 +63,81 @@ export default function Navigation() {
         ]
 
   const languages: Language[] = ["en", "hi", "ur", "bn"]
+  const contactPhone = navData?.contactPhone || "+251 123 456 78"
+  const telHref = `tel:${contactPhone.replace(/[^\d+]/g, "")}`
+  const whatsappDigits = contactPhone.replace(/\D/g, "")
+  const waHref = whatsappDigits ? `https://wa.me/${whatsappDigits}` : "#"
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-white/40 shadow-[0_15px_35px_-20px_rgba(0,0,0,0.35)]">
-      <div className="absolute inset-x-0 bottom-0 h-[2px] bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 opacity-70" />
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16 md:h-auto md:py-3">
+    <nav className="sticky top-0 z-50">
+      <div className="relative bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white border-b border-white/10 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_50%,rgba(16,185,129,0.2),transparent_32%),radial-gradient(circle_at_85%_50%,rgba(45,212,191,0.16),transparent_30%)]" />
+        <div className="container mx-auto px-4">
+          <div className="relative z-10 h-8 md:h-9 flex items-center justify-between text-[11px] md:text-xs">
+            <div className="hidden sm:flex items-center gap-2.5">
+              <span className="inline-flex items-center rounded-full border border-emerald-300/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] md:text-[11px] tracking-wide font-semibold">
+                {t("2026 Admissions")}
+              </span>
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse" />
+              <p className="text-white/80">{t("Applications open now")}</p>
+            </div>
+            <div className="flex items-center gap-2 md:gap-2.5 ml-auto">
+              <a
+                href={telHref}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-2.5 py-1 hover:bg-white/20 hover:border-white/40 transition-all duration-200"
+              >
+                <PhoneCall className="h-3.5 w-3.5" />
+                <span className="font-medium">{t("Call now")}</span>
+              </a>
+              <a
+                href={waHref}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/50 bg-emerald-500/25 px-2.5 py-1 hover:bg-emerald-500/35 hover:border-emerald-300/70 transition-all duration-200"
+              >
+                <MessageCircle className="h-3.5 w-3.5" />
+                <span className="font-medium">{t("WhatsApp now")}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="bg-white/78 backdrop-blur-2xl border-b border-white/60 shadow-[0_24px_60px_-44px_rgba(2,6,23,0.55)]">
+        <div className="container mx-auto px-4 py-2">
+        <div className="flex justify-between items-center h-14 md:h-16 px-2 md:px-3 rounded-2xl border border-slate-200/80 bg-white/85 shadow-[0_20px_40px_-34px_rgba(15,23,42,0.4)]">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 min-w-0">
             {navData?.logoImage?.image ? (
               <img
                 src={urlFor(navData.logoImage.image).width(200).height(200).fit("max").url()}
                 alt={navData.logoImage.alt || navData.logoText || "Logo"}
-                className="w-10 h-10 md:w-12 md:h-12 rounded-xl object-contain bg-white shadow-md shadow-emerald-200/40 p-1 flex-shrink-0"
+                className="w-11 h-11 md:w-12 md:h-12 rounded-xl object-contain bg-white shadow-md shadow-emerald-200/40 p-1 flex-shrink-0 ring-1 ring-emerald-100"
               />
             ) : (
-              <div className="w-9 h-9 md:w-11 md:h-11 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-emerald-200/40">
-                <span className="text-white font-bold text-base md:text-xl">M</span>
+              <div className="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-emerald-200/40 ring-1 ring-white/60">
+                <span className="text-white font-bold text-lg md:text-xl">M</span>
               </div>
             )}
             <div className="min-w-0">
-                <div className="text-sm md:text-lg font-bold text-gray-900 truncate">
+                <div className="text-sm md:text-base font-semibold text-slate-900 truncate tracking-tight">
                 {pickLocalizedText(language, navData?.logoTextI18n, navData?.logoText || "Meed International School")}
                 </div>
-              <div className="text-[10px] md:text-xs text-emerald-600 truncate">
+              <div className="text-[10px] md:text-[11px] text-emerald-700 truncate">
                 {pickLocalizedText(language, navData?.logoSubtextI18n, navData?.logoSubtext || "Holistic Education for Dual Success")}
               </div>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-5">
+          <div className="hidden lg:flex items-center gap-3">
             {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative text-gray-700 hover:text-emerald-800 font-semibold transition-all text-sm whitespace-nowrap group px-3 py-2 rounded-full hover:bg-emerald-50"
+                className="relative text-slate-700 hover:text-emerald-800 font-semibold transition-all text-sm whitespace-nowrap group px-3 py-2 rounded-full hover:bg-emerald-50/70"
               >
                 {item.name}
-                <span className="absolute left-3 right-3 -bottom-1 h-[2px] bg-gradient-to-r from-emerald-500 to-teal-400 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-200" />
+                <span className="absolute left-3 right-3 -bottom-1 h-[2px] bg-gradient-to-r from-emerald-500 to-teal-400 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
               </Link>
             ))}
 
@@ -108,7 +145,7 @@ export default function Navigation() {
             <div ref={langRefDesktop} className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-sm font-medium text-gray-700 shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-sm font-medium text-gray-700"
                 aria-label="Select language"
               >
                 <Globe className="h-4 w-4 text-emerald-600" />
@@ -132,18 +169,12 @@ export default function Navigation() {
               )}
             </div>
 
-            {/* Admin icon - Desktop */}
-            <Link
-              href="/admin"
-              className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-gray-700 shadow-sm"
-              aria-label="Admin"
-            >
-              <LockKeyhole className="h-4 w-4" />
-            </Link>
-
             <Link href="/register">
-              <Button className="bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white px-5 py-2 rounded-full font-semibold text-sm shadow-[0_12px_30px_-15px_rgba(16,185,129,0.7)] transition-transform hover:-translate-y-0.5">
+              <Button className="bg-amber-300 text-slate-900 border border-amber-400 hover:bg-amber-200 px-3 py-1.5 rounded-full font-semibold text-sm shadow-sm transition-all">
                 {pickLocalizedText(language, navData?.navCta?.labelI18n, navData?.navCta?.label || "Apply Now")}
+                <span className="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-white">
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </span>
               </Button>
             </Link>
           </div>
@@ -177,13 +208,10 @@ export default function Navigation() {
               )}
             </div>
 
-            {/* Admin icon - Mobile */}
-            <Link
-              href="/admin"
-              className="flex items-center justify-center w-8 h-8 rounded-full border border-gray-200 text-gray-700 hover:border-emerald-300 hover:bg-emerald-50 transition-colors"
-              aria-label="Admin"
-            >
-              <LockKeyhole className="h-4 w-4" />
+            <Link href="/register" aria-label="Apply now">
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-300 border border-amber-400 text-slate-900">
+                <ArrowUpRight className="h-4 w-4" />
+              </span>
             </Link>
 
             {/* Hamburger */}
@@ -195,7 +223,7 @@ export default function Navigation() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden py-2 border-t border-gray-100 bg-white/95 backdrop-blur animate-in slide-in-from-top-2 duration-200 shadow-inner">
+          <div className="lg:hidden py-2 border-t border-gray-100 bg-white/95 backdrop-blur animate-in slide-in-from-top-2 duration-200 shadow-inner rounded-b-2xl">
             <div className="flex flex-col gap-1">
               {navigation.map((item) => (
                 <Link
@@ -207,14 +235,10 @@ export default function Navigation() {
                   {item.name}
                 </Link>
               ))}
-              <Link href="/register" onClick={() => setIsOpen(false)} className="mt-2">
-                <Button className="w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white py-3 rounded-lg font-medium text-sm shadow">
-                  {pickLocalizedText(language, navData?.navCta?.labelI18n, navData?.navCta?.label || "Apply Now")}
-                </Button>
-              </Link>
             </div>
           </div>
         )}
+      </div>
       </div>
     </nav>
   )
