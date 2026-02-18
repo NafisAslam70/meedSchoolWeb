@@ -1,11 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Star, ChevronLeft, ChevronRight } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 
 export default function TestimonialsSection() {
   const [activeIndex, setActiveIndex] = useState(1)
+  const [isPaused, setIsPaused] = useState(false)
   const { t } = useLanguage()
 
   const testimonials = [
@@ -63,9 +64,27 @@ export default function TestimonialsSection() {
 
   const prev = () => setActiveIndex((i) => (i - 1 + testimonials.length) % testimonials.length)
   const next = () => setActiveIndex((i) => (i + 1) % testimonials.length)
+  const visibleDesktopTestimonials = [...Array(3)].map(
+    (_, i) => testimonials[(activeIndex + i) % testimonials.length]
+  )
+
+  useEffect(() => {
+    if (isPaused || testimonials.length < 2) return
+    const interval = window.setInterval(() => {
+      setActiveIndex((i) => (i + 1) % testimonials.length)
+    }, 5500)
+
+    return () => window.clearInterval(interval)
+  }, [isPaused, testimonials.length])
 
   return (
-    <section className="py-12 md:py-20 bg-gray-900 overflow-hidden">
+    <section
+      className="py-12 md:py-20 bg-gray-900 overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocusCapture={() => setIsPaused(true)}
+      onBlurCapture={() => setIsPaused(false)}
+    >
       <div className="container mx-auto px-4">
         <div className="text-center mb-8 md:mb-16">
           <h2 className="text-2xl md:text-4xl font-bold text-white mb-3 md:mb-4">
@@ -81,7 +100,10 @@ export default function TestimonialsSection() {
 
         {/* Mobile: Card carousel */}
         <div className="md:hidden">
-            <div className="bg-gray-800 rounded-xl p-5 border border-gray-700 mx-2">
+            <div
+              key={activeIndex}
+              className="bg-gray-800 rounded-xl p-5 border border-gray-700 mx-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4"
+            >
               <div className="flex items-center gap-3 mb-3">
                 {testimonials[activeIndex].image && (
                   <img
@@ -96,9 +118,9 @@ export default function TestimonialsSection() {
                 </div>
               </div>
               <div className="flex mb-3">
-              {[...Array(testimonials[activeIndex].stars)].map((_, i) => (
-                <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
-              ))}
+                {[...Array(testimonials[activeIndex].stars)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                ))}
               </div>
               <p className="text-gray-300 text-sm leading-relaxed">
                 {`"${testimonials[activeIndex].quote}"`}
@@ -126,8 +148,11 @@ export default function TestimonialsSection() {
 
         {/* Desktop: Grid */}
         <div className="hidden md:grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {testimonials.slice(0, 3).map((testimonial, index) => (
-            <div key={index} className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-lg">
+          {visibleDesktopTestimonials.map((testimonial, index) => (
+            <div
+              key={`${testimonial.author}-${activeIndex}-${index}`}
+              className="bg-gray-800 rounded-2xl p-6 border border-gray-700 shadow-lg transition-all duration-500 hover:-translate-y-1 hover:shadow-emerald-500/20 hover:border-emerald-400/40"
+            >
               <div className="flex items-center gap-3 mb-4">
                 {testimonial.image && (
                   <img
@@ -149,6 +174,25 @@ export default function TestimonialsSection() {
               <p className="text-gray-300 mb-2 text-sm leading-relaxed">{`"${testimonial.quote}"`}</p>
             </div>
           ))}
+        </div>
+
+        <div className="hidden md:flex items-center justify-center gap-5 mt-8">
+          <button onClick={prev} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors" aria-label="Previous testimonial">
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <div className="flex gap-2">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveIndex(i)}
+                className={`h-2 rounded-full transition-all ${i === activeIndex ? "w-7 bg-emerald-500" : "w-2 bg-white/30 hover:bg-white/50"}`}
+                aria-label={`Go to testimonial ${i + 1}`}
+              />
+            ))}
+          </div>
+          <button onClick={next} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors" aria-label="Next testimonial">
+            <ChevronRight className="h-5 w-5" />
+          </button>
         </div>
 
         <div className="text-center mt-10 md:mt-16">

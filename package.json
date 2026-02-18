@@ -4,6 +4,7 @@
   "private": true,
   "packageManager": "pnpm@10.29.2",
   "scripts": {
+    "preinstall": "node -e \"if (!(process.env.npm_execpath || '').includes('pnpm')) { console.error('Use pnpm: run `npx pnpm install`'); process.exit(1) }\"",
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
@@ -12,7 +13,10 @@
     "db:push:all": "psql \"$DATABASE_URL\" -f scripts/create-registrations-table.sql && psql \"$DATABASE_URL\" -f scripts/create-cms-tables.sql",
     "dbpush": "drizzle-kit push --config drizzle.config.ts",
     "dbstudio": "drizzle-kit studio --config drizzle.config.ts",
-    "seed:sanity": "node scripts/seed-sanity.js"
+    "seed:sanity": "node scripts/seed-sanity.js",
+    "cms:backfill-i18n": "node scripts/backfill-sanity-i18n.js",
+    "cms:fill-home-i18n": "node scripts/fill-homepage-i18n.js",
+    "cms:fill-all-i18n": "node scripts/fill-all-pages-i18n.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

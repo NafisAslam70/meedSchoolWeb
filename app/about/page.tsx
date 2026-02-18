@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Heart, Target, Award, Users, BookOpen, Shield, Lightbulb, Zap, Star, CheckCircle, Eye, Search, Repeat, Flame } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
+import { pickLocalizedText } from "@/lib/cms-i18n"
 
 export default function AboutPage() {
   const [hoveredPillar, setHoveredPillar] = useState<number | null>(null)
   const [cms, setCms] = useState<any | null>(null)
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
 
   useEffect(() => {
     fetch("/api/cms/about")
@@ -69,10 +70,10 @@ export default function AboutPage() {
               Holistic Education for Dual Success
             </div>
             <h1 className="text-3xl md:text-6xl font-bold text-white mb-6">
-              {cms?.heroTitle || t("About Meed International School", "\u092E\u0940\u0921 \u0907\u0902\u091F\u0930\u0928\u0947\u0936\u0928\u0932 \u0938\u094D\u0915\u0942\u0932 \u0915\u0947 \u092C\u093E\u0930\u0947 \u092E\u0947\u0902")}
+              {pickLocalizedText(language, cms?.heroTitleI18n, cms?.heroTitle || "About Meed International School")}
             </h1>
             <p className="text-lg md:text-2xl text-gray-300 leading-relaxed">
-              {cms?.heroSubtitle || "Where intellectual excellence meets moral and spiritual growth -- cultivating experts with integrity"}
+              {pickLocalizedText(language, cms?.heroSubtitleI18n, cms?.heroSubtitle || "Where intellectual excellence meets moral and spiritual growth -- cultivating experts with integrity")}
             </p>
           </div>
         </div>

@@ -8,9 +8,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, Clock, Star, ArrowRight, Users, Award, Sparkles, Heart, Shield, Lightbulb } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
+import { pickLocalizedText } from "@/lib/cms-i18n"
 
 export default function AdmissionsPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [cms, setCms] = useState<any | null>(null)
 
   useEffect(() => {
@@ -42,10 +43,10 @@ export default function AdmissionsPage() {
               Holistic Education for Dual Success
             </div>
             <h1 className="text-3xl md:text-6xl font-bold text-white mb-6">
-              {cms?.heroTitle || t("Give Your Child Both Success", "\u0905\u092A\u0928\u0947 \u092C\u091A\u094D\u091A\u0947 \u0915\u094B \u0926\u094B\u0928\u094B\u0902 \u0938\u092B\u0932\u0924\u093E \u0926\u0947\u0902")}
+              {pickLocalizedText(language, cms?.heroTitleI18n, cms?.heroTitle || "Give Your Child Both Success")}
             </h1>
             <p className="text-lg md:text-2xl text-emerald-100 mb-8 md:mb-10">
-              {cms?.heroSubtitle || "Academic excellence and character development -- the MEED way"}
+              {pickLocalizedText(language, cms?.heroSubtitleI18n, cms?.heroSubtitle || "Academic excellence and character development -- the MEED way")}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/register">

@@ -3,7 +3,7 @@ import { homePage } from "./home"
 import { aboutPage } from "./about"
 import { contactPage } from "./contact"
 import { admissionsPage, pricingPage, programPage } from "./collections"
-import { cta, heroSlide, imageWithAlt, principle, richBlock, stat } from "./objects"
+import { cta, heroSlide, imageWithAlt, localizedString, localizedText, principle, richBlock, stat } from "./objects"
 import { siteSettings, navLink, socialLink } from "./site"
 
 export const schema: { types: SchemaTypeDefinition[] } = {
@@ -20,6 +20,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     contactPage,
     // Objects
     imageWithAlt,
+    localizedString,
+    localizedText,
     cta,
     stat,
     principle,

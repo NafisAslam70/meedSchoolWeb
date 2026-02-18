@@ -35,10 +35,22 @@ export const homePage = defineType({
       group: "vision",
     }),
     defineField({
+      name: "visionHeadlineI18n",
+      title: "Vision headline (Multilingual)",
+      type: "localizedString",
+      group: "vision",
+    }),
+    defineField({
       name: "visionQuote",
       title: "Vision quote",
       type: "text",
       rows: 3,
+      group: "vision",
+    }),
+    defineField({
+      name: "visionQuoteI18n",
+      title: "Vision quote (Multilingual)",
+      type: "localizedText",
       group: "vision",
     }),
     defineField({
@@ -50,7 +62,9 @@ export const homePage = defineType({
           type: "object",
           fields: [
             { name: "title", type: "string", title: "Title" },
+            { name: "titleI18n", type: "localizedString", title: "Title (Multilingual)" },
             { name: "description", type: "text", rows: 3, title: "Description" },
+            { name: "descriptionI18n", type: "localizedText", title: "Description (Multilingual)" },
           ],
         },
       ],
@@ -67,6 +81,12 @@ export const homePage = defineType({
       name: "ecosystemHeadline",
       title: "Ecosystem headline",
       type: "string",
+      group: "ecosystem",
+    }),
+    defineField({
+      name: "ecosystemHeadlineI18n",
+      title: "Ecosystem headline (Multilingual)",
+      type: "localizedString",
       group: "ecosystem",
     }),
     defineField({
@@ -92,7 +112,9 @@ export const homePage = defineType({
           type: "object",
           fields: [
             { name: "title", type: "string", title: "Title" },
+            { name: "titleI18n", type: "localizedString", title: "Title (Multilingual)" },
             { name: "description", type: "text", rows: 2, title: "Description" },
+            { name: "descriptionI18n", type: "localizedText", title: "Description (Multilingual)" },
           ],
         },
       ],
@@ -107,7 +129,9 @@ export const homePage = defineType({
           type: "object",
           fields: [
             { name: "title", type: "string", title: "Title" },
+            { name: "titleI18n", type: "localizedString", title: "Title (Multilingual)" },
             { name: "description", type: "text", rows: 2, title: "Description" },
+            { name: "descriptionI18n", type: "localizedText", title: "Description (Multilingual)" },
           ],
         },
       ],
@@ -122,7 +146,9 @@ export const homePage = defineType({
           type: "object",
           fields: [
             { name: "title", type: "string", title: "Title" },
+            { name: "titleI18n", type: "localizedString", title: "Title (Multilingual)" },
             { name: "description", type: "text", rows: 3, title: "Description" },
+            { name: "descriptionI18n", type: "localizedText", title: "Description (Multilingual)" },
           ],
         },
       ],

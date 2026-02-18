@@ -23,9 +23,10 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
+import { pickLocalizedText } from "@/lib/cms-i18n"
 
 export default function ProgramsPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [expandedProgram, setExpandedProgram] = useState<number | null>(null)
   const [cms, setCms] = useState<any | null>(null)
 
@@ -125,17 +126,21 @@ export default function ProgramsPage() {
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-flex items-center bg-emerald-500/20 text-emerald-200 px-4 py-2 rounded-full text-sm font-medium mb-6">
               <Star className="w-4 h-4 mr-2" />
-              {cms?.heroSubtitle || "Pre-Primary through Class VIII"}
+              {pickLocalizedText(language, cms?.heroSubtitleI18n, cms?.heroSubtitle || "Pre-Primary through Class VIII")}
             </div>
             <h1 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              {cms?.heroTitle || t("Our Programs", "\u0939\u092E\u093E\u0930\u0947 \u0915\u093E\u0930\u094D\u092F\u0915\u094D\u0930\u092E")}
+              {pickLocalizedText(language, cms?.heroTitleI18n, cms?.heroTitle || "Our Programs")}
             </h1>
             <p className="text-base md:text-xl text-emerald-100 px-2">
-              {cms?.heroSubtitle ||
+              {pickLocalizedText(
+                language,
+                cms?.heroSubtitleI18n,
+                cms?.heroSubtitle ||
                 t(
                   "Holistic education structured by MEED Rituals Imaging (MRI) with age-appropriate assessment at every stage",
                   "MEED Rituals Imaging (MRI) \u0926\u094D\u0935\u093E\u0930\u093E \u0938\u0902\u0930\u091A\u093F\u0924 \u0938\u092E\u0917\u094D\u0930 \u0936\u093F\u0915\u094D\u0937\u093E, \u0939\u0930 \u091A\u0930\u0923 \u092E\u0947\u0902 \u0906\u092F\u0941-\u0909\u092A\u092F\u0941\u0915\u094D\u0924 \u092E\u0942\u0932\u094D\u092F\u093E\u0902\u0915\u0928"
-                )}
+                )
+              )}
             </p>
           </div>
         </div>

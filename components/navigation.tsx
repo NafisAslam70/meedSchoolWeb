@@ -6,16 +6,20 @@ import { Button } from "@/components/ui/button"
 import { Menu, X, Globe, ChevronDown, LockKeyhole } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { type Language, languageLabels, languageShort } from "@/lib/translations"
+import { urlFor } from "@/sanity/lib/image"
+import { pickLocalizedText } from "@/lib/cms-i18n"
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
   const [navData, setNavData] = useState<{
     logoText?: string
+    logoTextI18n?: { en?: string; hi?: string; ur?: string; bn?: string }
     logoImage?: { image?: any; alt?: string }
     logoSubtext?: string
-    navLinks?: { label: string; href: string }[]
-    navCta?: { label?: string; href?: string }
+    logoSubtextI18n?: { en?: string; hi?: string; ur?: string; bn?: string }
+    navLinks?: { label: string; labelI18n?: { en?: string; hi?: string; ur?: string; bn?: string }; href: string }[]
+    navCta?: { label?: string; labelI18n?: { en?: string; hi?: string; ur?: string; bn?: string }; href?: string }
   } | null>(null)
   const langRefDesktop = useRef<HTMLDivElement>(null)
   const langRefMobile = useRef<HTMLDivElement>(null)
@@ -45,7 +49,7 @@ export default function Navigation() {
 
   const navigation =
     navData?.navLinks?.length
-      ? navData.navLinks.map((l) => ({ name: l.label, href: l.href }))
+      ? navData.navLinks.map((l) => ({ name: pickLocalizedText(language, l.labelI18n, l.label), href: l.href }))
       : [
           { name: t("Home"), href: "/" },
           { name: t("About"), href: "/about" },
@@ -68,7 +72,7 @@ export default function Navigation() {
           <Link href="/" className="flex items-center gap-2 min-w-0">
             {navData?.logoImage?.image ? (
               <img
-                src={`/api/cms/image?ref=${encodeURIComponent(JSON.stringify(navData.logoImage.image))}`}
+                src={urlFor(navData.logoImage.image).width(200).height(200).fit("max").url()}
                 alt={navData.logoImage.alt || navData.logoText || "Logo"}
                 className="w-10 h-10 md:w-12 md:h-12 rounded-xl object-contain bg-white shadow-md shadow-emerald-200/40 p-1 flex-shrink-0"
               />
@@ -78,11 +82,11 @@ export default function Navigation() {
               </div>
             )}
             <div className="min-w-0">
-              <div className="text-sm md:text-lg font-bold text-gray-900 truncate">
-                {navData?.logoText || t("Meed International School")}
-              </div>
+                <div className="text-sm md:text-lg font-bold text-gray-900 truncate">
+                {pickLocalizedText(language, navData?.logoTextI18n, navData?.logoText || "Meed International School")}
+                </div>
               <div className="text-[10px] md:text-xs text-emerald-600 truncate">
-                {navData?.logoSubtext || t("Holistic Education for Dual Success")}
+                {pickLocalizedText(language, navData?.logoSubtextI18n, navData?.logoSubtext || "Holistic Education for Dual Success")}
               </div>
             </div>
           </Link>
@@ -139,7 +143,7 @@ export default function Navigation() {
 
             <Link href="/register">
               <Button className="bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white px-5 py-2 rounded-full font-semibold text-sm shadow-[0_12px_30px_-15px_rgba(16,185,129,0.7)] transition-transform hover:-translate-y-0.5">
-                {navData?.navCta?.label || t("Apply Now")}
+                {pickLocalizedText(language, navData?.navCta?.labelI18n, navData?.navCta?.label || "Apply Now")}
               </Button>
             </Link>
           </div>
@@ -205,7 +209,7 @@ export default function Navigation() {
               ))}
               <Link href="/register" onClick={() => setIsOpen(false)} className="mt-2">
                 <Button className="w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white py-3 rounded-lg font-medium text-sm shadow">
-                  {navData?.navCta?.label || t("Apply Now")}
+                  {pickLocalizedText(language, navData?.navCta?.labelI18n, navData?.navCta?.label || "Apply Now")}
                 </Button>
               </Link>
             </div>

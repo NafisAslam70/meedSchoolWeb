@@ -9,6 +9,7 @@ import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail, Phone, MapPin, Clock, Send } from "lucide-react"
+import { pickLocalizedText } from "@/lib/cms-i18n"
 
 export default function ContactPage() {
   const [cms, setCms] = useState<any | null>(null)
@@ -18,7 +19,7 @@ export default function ContactPage() {
     subject: "",
     message: "",
   })
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
 
   useEffect(() => {
     fetch("/api/cms/contact")
@@ -63,8 +64,8 @@ export default function ContactPage() {
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">{cms?.headline || "Contact Us"}</h1>
-            <p className="text-lg md:text-2xl text-emerald-100">{cms?.subhead || "We're here to help with any questions"}</p>
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">{pickLocalizedText(language, cms?.headlineI18n, cms?.headline || "Contact Us")}</h1>
+            <p className="text-lg md:text-2xl text-emerald-100">{pickLocalizedText(language, cms?.subheadI18n, cms?.subhead || "We're here to help with any questions")}</p>
           </div>
         </div>
       </section>
@@ -101,7 +102,7 @@ export default function ContactPage() {
                   <MapPin className="h-5 md:h-6 w-5 md:w-6 text-white" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2 text-sm md:text-base">Visit Us</h3>
-                <p className="text-gray-600 text-sm md:text-base">{cms?.address || "Addis Ababa, Ethiopia"}</p>
+                <p className="text-gray-600 text-sm md:text-base">{pickLocalizedText(language, cms?.addressI18n, cms?.address || "Addis Ababa, Ethiopia")}</p>
                 <p className="text-gray-500 text-xs md:text-sm">Campus tours available</p>
               </CardContent>
             </Card>

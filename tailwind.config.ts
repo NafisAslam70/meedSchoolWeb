@@ -1,5 +1,12 @@
 import type { Config } from "tailwindcss";
 
+let tailwindAnimatePlugin: any = () => {}
+try {
+  // Keep startup resilient if node_modules is temporarily out of sync.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  tailwindAnimatePlugin = require("tailwindcss-animate")
+} catch {}
+
 const config: Config = {
     darkMode: ["class"],
     content: [
@@ -91,6 +98,6 @@ const config: Config = {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindAnimatePlugin],
 };
 export default config;

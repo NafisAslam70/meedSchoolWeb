@@ -6,6 +6,7 @@ export const navLink = defineType({
   type: "object",
   fields: [
     defineField({ name: "label", title: "Label", type: "string" }),
+    defineField({ name: "labelI18n", title: "Label (Multilingual)", type: "localizedString" }),
     defineField({ name: "href", title: "URL", type: "string" }),
   ],
 })
@@ -76,6 +77,12 @@ export const siteSettings = defineType({
       group: "navbar",
     }),
     defineField({
+      name: "logoTextI18n",
+      title: "Logo Title (Multilingual)",
+      type: "localizedString",
+      group: "navbar",
+    }),
+    defineField({
       name: "logoImage",
       title: "Logo Image",
       type: "imageWithAlt",
@@ -86,6 +93,12 @@ export const siteSettings = defineType({
       name: "logoSubtext",
       title: "Logo Subtext / Tagline",
       type: "string",
+      group: "navbar",
+    }),
+    defineField({
+      name: "logoSubtextI18n",
+      title: "Logo Subtext / Tagline (Multilingual)",
+      type: "localizedString",
       group: "navbar",
     }),
     defineField({
@@ -101,6 +114,7 @@ export const siteSettings = defineType({
       type: "object",
       fields: [
         defineField({ name: "label", type: "string", title: "Label" }),
+        defineField({ name: "labelI18n", type: "localizedString", title: "Label (Multilingual)" }),
         defineField({ name: "href", type: "string", title: "URL" }),
       ],
       group: "navbar",
@@ -110,6 +124,12 @@ export const siteSettings = defineType({
       title: "Footer Blurb",
       type: "text",
       rows: 3,
+      group: "footer",
+    }),
+    defineField({
+      name: "footerBlurbI18n",
+      title: "Footer Blurb (Multilingual)",
+      type: "localizedText",
       group: "footer",
     }),
     defineField({
@@ -130,6 +150,12 @@ export const siteSettings = defineType({
       name: "contactAddress",
       title: "Contact Address",
       type: "string",
+      group: "footer",
+    }),
+    defineField({
+      name: "contactAddressI18n",
+      title: "Contact Address (Multilingual)",
+      type: "localizedString",
       group: "footer",
     }),
     defineField({
@@ -155,6 +181,12 @@ export const siteSettings = defineType({
       name: "copyrightText",
       title: "Copyright Text",
       type: "string",
+      group: "footer",
+    }),
+    defineField({
+      name: "copyrightTextI18n",
+      title: "Copyright Text (Multilingual)",
+      type: "localizedString",
       group: "footer",
     }),
   ],

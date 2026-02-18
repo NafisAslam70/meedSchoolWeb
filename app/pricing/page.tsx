@@ -9,8 +9,10 @@ import { Check, Star, Users, BookOpen, Heart, Brain } from "lucide-react"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import Link from "next/link"
+import { pickLocalizedText } from "@/lib/cms-i18n"
 
 export default function PricingPage() {
+  const { t, language } = useLanguage()
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual")
   const [cms, setCms] = useState<any | null>(null)
 
@@ -122,12 +124,16 @@ export default function PricingPage() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-medium mb-6">
             <Star className="w-4 h-4 mr-2" />
-            {cms?.heroSubtitle || "Pre-Primary through Class 8"}
+            {pickLocalizedText(language, cms?.heroSubtitleI18n, cms?.heroSubtitle || "Pre-Primary through Class 8")}
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">{cms?.heroTitle || "Fees & Tuition"}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">{pickLocalizedText(language, cms?.heroTitleI18n, cms?.heroTitle || "Fees & Tuition")}</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            {cms?.heroSubtitle ||
-              "Invest in your child's holistic development. Our programs include comprehensive academic curriculum plus the MEED evaluation framework that tracks character alongside academics."}
+            {pickLocalizedText(
+              language,
+              cms?.heroSubtitleI18n,
+              cms?.heroSubtitle ||
+                "Invest in your child's holistic development. Our programs include comprehensive academic curriculum plus the MEED evaluation framework that tracks character alongside academics."
+            )}
           </p>
 
           {/* Billing Toggle */}
