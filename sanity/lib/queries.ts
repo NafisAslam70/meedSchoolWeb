@@ -1,6 +1,7 @@
 import { groq } from "next-sanity"
 
 export const homeQuery = groq`*[_type == "homePage"][0]{
+  videoUrl,
   slides[]{
     title, subtitle, description,
     primaryCta, secondaryCta,
@@ -12,10 +13,12 @@ export const homeQuery = groq`*[_type == "homePage"][0]{
   principles,
   ecosystemHeadline,
   ecosystemImage{image, alt},
+  ecosystemGallery[]{image, alt},
   ecosystemBullets,
   executionSteps,
   assessmentCards,
   assessmentImage{image, alt},
+  assessmentGallery[]{image, alt},
   stats
 }`
 

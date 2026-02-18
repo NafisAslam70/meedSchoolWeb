@@ -22,6 +22,13 @@ export const homePage = defineType({
       group: "hero",
     }),
     defineField({
+      name: "videoUrl",
+      title: "Hero Video (YouTube URL)",
+      type: "url",
+      description: "Paste a full YouTube link to feature a brand film under the hero.",
+      group: "hero",
+    }),
+    defineField({
       name: "visionHeadline",
       title: "Vision headline",
       type: "string",
@@ -66,6 +73,14 @@ export const homePage = defineType({
       name: "ecosystemImage",
       title: "Ecosystem image",
       type: "imageWithAlt",
+      group: "ecosystem",
+    }),
+    defineField({
+      name: "ecosystemGallery",
+      title: "Ecosystem gallery",
+      description: "Optional carousel; add multiple images to create a slider.",
+      type: "array",
+      of: [{ type: "imageWithAlt" }],
       group: "ecosystem",
     }),
     defineField({
@@ -117,6 +132,14 @@ export const homePage = defineType({
       name: "assessmentImage",
       title: "Assessment image",
       type: "imageWithAlt",
+      group: "assessment",
+    }),
+    defineField({
+      name: "assessmentGallery",
+      title: "Assessment gallery",
+      description: "Add 3-5 shots to show assessment in action.",
+      type: "array",
+      of: [{ type: "imageWithAlt" }],
       group: "assessment",
     }),
     defineField({

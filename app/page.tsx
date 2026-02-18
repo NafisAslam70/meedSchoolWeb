@@ -7,6 +7,7 @@ import {
   BookOpen, Phone, Users, Award, Globe, Shield, Lightbulb, Zap, Heart,
   Eye, Target, Repeat, Play, Search, Clock,
 } from "lucide-react"
+import { GallerySlider } from "@/components/gallery-slider"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import TestimonialsSection from "@/components/testimonials"
@@ -15,6 +16,7 @@ import { useLanguage } from "@/lib/language-context"
 import { urlFor } from "@/sanity/lib/image"
 
 type CMSHome = {
+  videoUrl?: string
   slides?: any[]
   visionHeadline?: string
   visionQuote?: string
@@ -22,10 +24,12 @@ type CMSHome = {
   principles?: any[]
   ecosystemHeadline?: string
   ecosystemImage?: { image?: any; alt?: string }
+  ecosystemGallery?: any[]
   ecosystemBullets?: any[]
   executionSteps?: any[]
   assessmentCards?: any[]
   assessmentImage?: { image?: any; alt?: string }
+  assessmentGallery?: any[]
   stats?: any[]
 }
 
@@ -54,13 +58,59 @@ export default function HomePage() {
     }))
   }, [cms])
 
-  const ecosystemImageSrc = cms?.ecosystemImage?.image
-    ? urlFor(cms.ecosystemImage.image).width(1200).height(800).url()
-    : "/placeholder.svg"
+  const brandVideoEmbed = useMemo(() => {
+    if (!cms?.videoUrl) return null
+    try {
+      const u = new URL(cms.videoUrl)
+      const host = u.hostname
+      let id = ""
+      if (host.includes("youtu.be")) {
+        id = u.pathname.slice(1)
+      } else if (host.includes("youtube.com")) {
+        id = u.searchParams.get("v") || u.pathname.split("/").pop() || ""
+      }
+      if (!id) return null
+      return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`
+    } catch {
+      return null
+    }
+  }, [cms?.videoUrl])
 
-  const assessmentImageSrc = cms?.assessmentImage?.image
-    ? urlFor(cms.assessmentImage.image).width(1200).height(800).url()
-    : "/placeholder.svg"
+  const ecosystemGallery = useMemo(() => {
+    if (cms?.ecosystemGallery?.length) {
+      return cms.ecosystemGallery.map((img: any) => ({
+        src: urlFor(img.image).width(1400).height(900).url(),
+        alt: img.alt || "Ecosystem image",
+      }))
+    }
+    if (cms?.ecosystemImage?.image) {
+      return [
+        {
+          src: urlFor(cms.ecosystemImage.image).width(1400).height(900).url(),
+          alt: cms.ecosystemImage.alt || "Ecosystem image",
+        },
+      ]
+    }
+    return [{ src: "/images/hero-1.jpg", alt: "Placeholder" }]
+  }, [cms])
+
+  const assessmentGallery = useMemo(() => {
+    if (cms?.assessmentGallery?.length) {
+      return cms.assessmentGallery.map((img: any) => ({
+        src: urlFor(img.image).width(1400).height(900).url(),
+        alt: img.alt || "Assessment image",
+      }))
+    }
+    if (cms?.assessmentImage?.image) {
+      return [
+        {
+          src: urlFor(cms.assessmentImage.image).width(1400).height(900).url(),
+          alt: cms.assessmentImage.alt || "Assessment image",
+        },
+      ]
+    }
+    return [{ src: "/images/hero-2.jpg", alt: "Placeholder" }]
+  }, [cms])
 
   const visionCards =
     cms?.visionCards?.length > 0
@@ -133,6 +183,28 @@ export default function HomePage() {
     <div className="min-h-screen bg-background">
       <Navigation />
       <HeroSlider slides={heroSlides} />
+
+      {brandVideoEmbed && (
+        <section className="bg-black py-10 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
+              <div className="relative w-full overflow-hidden rounded-2xl shadow-2xl" style={{ aspectRatio: "16/9" }}>
+                <iframe
+                  src={brandVideoEmbed}
+                  title="MEED brand film"
+                  className="absolute inset-0 w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+              <div className="mt-4 flex items-center justify-between text-sm text-gray-200 px-1">
+                <span className="font-semibold uppercase tracking-wide text-emerald-300">{t("Watch our story")}</span>
+                <span className="text-gray-400">{t("2 min highlight film")}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Vision & Mission */}
       <section className="py-12 md:py-20 bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white">
@@ -229,7 +301,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="w-full lg:w-1/2">
-              <img src={ecosystemImageSrc} alt="MEED Daily Rituals" className="rounded-xl md:rounded-2xl shadow-xl w-full" />
+              <GallerySlider items={ecosystemGallery} aspectRatio="4/3" rounded="2xl" />
             </div>
           </div>
         </div>
@@ -266,7 +338,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col-reverse lg:flex-row gap-8 md:gap-12 items-center max-w-6xl mx-auto">
             <div className="w-full lg:w-1/2">
-              <img src={assessmentImageSrc} alt="Holistic Report Card" className="rounded-xl md:rounded-2xl shadow-xl w-full" />
+              <GallerySlider items={assessmentGallery} aspectRatio="4/3" rounded="2xl" />
             </div>
             <div className="w-full lg:w-1/2">
               <h2 className="text-2xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-balance">
