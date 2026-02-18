@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -10,7 +10,17 @@ import { useLanguage } from "@/lib/language-context"
 
 export default function AboutPage() {
   const [hoveredPillar, setHoveredPillar] = useState<number | null>(null)
+  const [cms, setCms] = useState<any | null>(null)
   const { t } = useLanguage()
+
+  useEffect(() => {
+    fetch("/api/cms/about")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.success) setCms(res.data)
+      })
+      .catch(() => {})
+  }, [])
 
   const pillars = [
     {
@@ -58,9 +68,11 @@ export default function AboutPage() {
               <Star className="w-4 h-4 mr-2" />
               Holistic Education for Dual Success
             </div>
-            <h1 className="text-3xl md:text-6xl font-bold text-white mb-6">{t("About Meed International School", "\u092E\u0940\u0921 \u0907\u0902\u091F\u0930\u0928\u0947\u0936\u0928\u0932 \u0938\u094D\u0915\u0942\u0932 \u0915\u0947 \u092C\u093E\u0930\u0947 \u092E\u0947\u0902")}</h1>
+            <h1 className="text-3xl md:text-6xl font-bold text-white mb-6">
+              {cms?.heroTitle || t("About Meed International School", "\u092E\u0940\u0921 \u0907\u0902\u091F\u0930\u0928\u0947\u0936\u0928\u0932 \u0938\u094D\u0915\u0942\u0932 \u0915\u0947 \u092C\u093E\u0930\u0947 \u092E\u0947\u0902")}
+            </h1>
             <p className="text-lg md:text-2xl text-gray-300 leading-relaxed">
-              Where intellectual excellence meets moral and spiritual growth -- cultivating experts with integrity
+              {cms?.heroSubtitle || "Where intellectual excellence meets moral and spiritual growth -- cultivating experts with integrity"}
             </p>
           </div>
         </div>

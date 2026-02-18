@@ -59,19 +59,19 @@ export default function Navigation() {
   const languages: Language[] = ["en", "hi", "ur", "bn"]
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
+    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-white/30 shadow-[0_10px_30px_-18px_rgba(0,0,0,0.35)]">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-14 md:h-auto md:py-3">
+        <div className="flex justify-between items-center h-16 md:h-auto md:py-3">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 min-w-0">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-sm md:text-lg">M</span>
+            <div className="w-9 h-9 md:w-11 md:h-11 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-emerald-200/40">
+              <span className="text-white font-bold text-base md:text-xl">M</span>
             </div>
             <div className="min-w-0">
-              <div className="text-xs md:text-lg font-bold text-gray-900 truncate">
+              <div className="text-sm md:text-lg font-bold text-gray-900 truncate">
                 {navData?.logoText || t("Meed International School")}
               </div>
-              <div className="text-[9px] md:text-xs text-emerald-600 truncate">
+              <div className="text-[10px] md:text-xs text-emerald-600 truncate">
                 {navData?.logoSubtext || t("Holistic Education for Dual Success")}
               </div>
             </div>
@@ -83,9 +83,10 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-gray-700 hover:text-emerald-600 font-medium transition-colors text-sm whitespace-nowrap"
+                className="relative text-gray-700 hover:text-emerald-700 font-medium transition-colors text-sm whitespace-nowrap group"
               >
                 {item.name}
+                <span className="absolute left-0 -bottom-1 h-0.5 w-0 bg-emerald-500 transition-all duration-200 group-hover:w-full" />
               </Link>
             ))}
 
@@ -93,7 +94,7 @@ export default function Navigation() {
             <div ref={langRefDesktop} className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-sm font-medium text-gray-700"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-sm font-medium text-gray-700 shadow-sm"
                 aria-label="Select language"
               >
                 <Globe className="h-4 w-4 text-emerald-600" />
@@ -120,14 +121,14 @@ export default function Navigation() {
             {/* Admin icon - Desktop */}
             <Link
               href="/admin"
-              className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-gray-700"
+              className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-gray-700 shadow-sm"
               aria-label="Admin"
             >
               <LockKeyhole className="h-4 w-4" />
             </Link>
 
             <Link href="/register">
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-lg font-medium text-sm">
+              <Button className="bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white px-5 py-2 rounded-full font-medium text-sm shadow-md shadow-emerald-200/40 transition-transform hover:-translate-y-0.5">
                 {navData?.navCta?.label || t("Apply Now")}
               </Button>
             </Link>
@@ -180,20 +181,20 @@ export default function Navigation() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden py-2 border-t animate-in slide-in-from-top-2 duration-200">
-            <div className="flex flex-col">
+          <div className="lg:hidden py-2 border-t border-gray-100 bg-white/95 backdrop-blur animate-in slide-in-from-top-2 duration-200 shadow-inner">
+            <div className="flex flex-col gap-1">
               {navigation.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="py-3 px-2 text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg font-medium text-sm transition-colors"
+                  className="py-3 px-2 text-gray-700 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg font-medium text-sm transition-colors"
                   onClick={() => setIsOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
               <Link href="/register" onClick={() => setIsOpen(false)} className="mt-2">
-                <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-medium text-sm">
+                <Button className="w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white py-3 rounded-lg font-medium text-sm shadow">
                   {navData?.navCta?.label || t("Apply Now")}
                 </Button>
               </Link>

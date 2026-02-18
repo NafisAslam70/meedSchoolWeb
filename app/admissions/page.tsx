@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from "react"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -10,6 +11,16 @@ import { useLanguage } from "@/lib/language-context"
 
 export default function AdmissionsPage() {
   const { t } = useLanguage()
+  const [cms, setCms] = useState<any | null>(null)
+
+  useEffect(() => {
+    fetch("/api/cms/admissions")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.success) setCms(res.data)
+      })
+      .catch(() => {})
+  }, [])
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
@@ -30,9 +41,11 @@ export default function AdmissionsPage() {
               <Star className="w-4 h-4 mr-2" />
               Holistic Education for Dual Success
             </div>
-            <h1 className="text-3xl md:text-6xl font-bold text-white mb-6">{t("Give Your Child Both Success", "\u0905\u092A\u0928\u0947 \u092C\u091A\u094D\u091A\u0947 \u0915\u094B \u0926\u094B\u0928\u094B\u0902 \u0938\u092B\u0932\u0924\u093E \u0926\u0947\u0902")}</h1>
+            <h1 className="text-3xl md:text-6xl font-bold text-white mb-6">
+              {cms?.heroTitle || t("Give Your Child Both Success", "\u0905\u092A\u0928\u0947 \u092C\u091A\u094D\u091A\u0947 \u0915\u094B \u0926\u094B\u0928\u094B\u0902 \u0938\u092B\u0932\u0924\u093E \u0926\u0947\u0902")}
+            </h1>
             <p className="text-lg md:text-2xl text-emerald-100 mb-8 md:mb-10">
-              Academic excellence and character development -- the MEED way
+              {cms?.heroSubtitle || "Academic excellence and character development -- the MEED way"}
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/register">

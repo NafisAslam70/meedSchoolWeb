@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/language-context"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
@@ -11,12 +11,23 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Mail, Phone, MapPin, Clock, Send } from "lucide-react"
 
 export default function ContactPage() {
+  const [cms, setCms] = useState<any | null>(null)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
   })
+  const { t } = useLanguage()
+
+  useEffect(() => {
+    fetch("/api/cms/contact")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.success) setCms(res.data)
+      })
+      .catch(() => {})
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,8 +63,8 @@ export default function ContactPage() {
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">Contact Us</h1>
-            <p className="text-lg md:text-2xl text-emerald-100">{"We're here to help with any questions"}</p>
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">{cms?.headline || "Contact Us"}</h1>
+            <p className="text-lg md:text-2xl text-emerald-100">{cms?.subhead || "We're here to help with any questions"}</p>
           </div>
         </div>
       </section>
@@ -68,7 +79,7 @@ export default function ContactPage() {
                   <Phone className="h-5 md:h-6 w-5 md:w-6 text-white" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2 text-sm md:text-base">Call Us</h3>
-                <p className="text-gray-600 text-sm md:text-base">+251 123 456 78</p>
+                <p className="text-gray-600 text-sm md:text-base">{cms?.phone || "+251 123 456 78"}</p>
                 <p className="text-gray-500 text-xs md:text-sm">Mon-Fri, 8am-5pm</p>
               </CardContent>
             </Card>
@@ -79,7 +90,7 @@ export default function ContactPage() {
                   <Mail className="h-5 md:h-6 w-5 md:w-6 text-white" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2 text-sm md:text-base">Email Us</h3>
-                <p className="text-gray-600 text-sm md:text-base">info@meedinternational.edu</p>
+                <p className="text-gray-600 text-sm md:text-base">{cms?.email || "info@meedinternational.edu"}</p>
                 <p className="text-gray-500 text-xs md:text-sm">24hr response</p>
               </CardContent>
             </Card>
@@ -90,7 +101,7 @@ export default function ContactPage() {
                   <MapPin className="h-5 md:h-6 w-5 md:w-6 text-white" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2 text-sm md:text-base">Visit Us</h3>
-                <p className="text-gray-600 text-sm md:text-base">Addis Ababa, Ethiopia</p>
+                <p className="text-gray-600 text-sm md:text-base">{cms?.address || "Addis Ababa, Ethiopia"}</p>
                 <p className="text-gray-500 text-xs md:text-sm">Campus tours available</p>
               </CardContent>
             </Card>
@@ -117,11 +128,22 @@ export default function ContactPage() {
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 md:mb-6">Find Us</h2>
               <div className="aspect-video bg-gray-200 rounded-xl overflow-hidden shadow-lg mb-4 md:mb-6">
-                <img
-                  src="/placeholder.svg?height=400&width=600&text=School+Location"
-                  alt="School Location"
-                  className="w-full h-full object-cover"
-                />
+                {cms?.mapEmbed ? (
+                  <iframe
+                    src={cms.mapEmbed}
+                    className="w-full h-full border-0"
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="School location"
+                  />
+                ) : (
+                  <img
+                    src="/placeholder.svg?height=400&width=600&text=School+Location"
+                    alt="School Location"
+                    className="w-full h-full object-cover"
+                  />
+                )}
               </div>
             </div>
 
