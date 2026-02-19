@@ -57,11 +57,17 @@ export default function Navigation() {
           { name: t("About"), href: "/about" },
           { name: t("Programs"), href: "/programs" },
           { name: t("Admissions"), href: "/admissions" },
-          { name: t("Meed Hostel"), href: "/pricing" },
+          { name: t("Meed Hostel"), href: "/hostel" },
           { name: t("Events"), href: "/events" },
           { name: t("Faculty"), href: "/faculty" },
           { name: t("Contact"), href: "/contact" },
         ]
+
+  const mappedNavigation = navigation
+    .filter((item) => item.href !== "/pricing") // drop pricing from top-level
+    .map((item) =>
+      item.href === "/hostel" ? { ...item, name: t("Meed Hostel") } : item
+    )
 
   const sectionLinks: Record<string, { label: string; href: string }[]> = {
     "/about": [
@@ -158,7 +164,7 @@ export default function Navigation() {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-2 w-full">
             <div className="flex items-center gap-2 flex-1 flex-nowrap overflow-visible justify-end">
-              {navigation.map((item) => {
+              {mappedNavigation.map((item) => {
                 const subs = sectionLinks[item.href] || []
                 return (
                   <div key={item.href} className="relative group">
@@ -274,7 +280,7 @@ export default function Navigation() {
         {isOpen && (
           <div className="lg:hidden py-2 border-t border-gray-100 bg-white/95 backdrop-blur animate-in slide-in-from-top-2 duration-200 shadow-inner">
             <div className="flex flex-col gap-1 max-h-[70vh] overflow-y-auto">
-              {navigation.map((item) => {
+              {mappedNavigation.map((item) => {
                 const subs = sectionLinks[item.href] || []
                 const isSubOpen = openSub === item.href
                 if (!subs.length) {
