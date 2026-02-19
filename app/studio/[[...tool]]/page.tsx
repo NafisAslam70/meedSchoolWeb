@@ -10,7 +10,8 @@
 import { NextStudio } from 'next-sanity/studio'
 import config from '../../../sanity.config'
 
-export const dynamic = 'force-static'
+// Avoid static pre-rendering for Studio to keep build memory usage lower on Vercel.
+export const dynamic = 'force-dynamic'
 
 export { metadata, viewport } from 'next-sanity/studio'
 
