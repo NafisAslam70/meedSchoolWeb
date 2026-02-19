@@ -70,8 +70,8 @@ export default function Navigation() {
 
   return (
     <nav className="sticky top-0 z-50">
-      <div className="relative bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white border-b border-white/10 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_50%,rgba(16,185,129,0.2),transparent_32%),radial-gradient(circle_at_85%_50%,rgba(45,212,191,0.16),transparent_30%)]" />
+      <div className="relative bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white border-b border-white/10 overflow-hidden shadow-[0_12px_40px_-28px_rgba(15,23,42,0.8)]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_50%,rgba(16,185,129,0.22),transparent_32%),radial-gradient(circle_at_85%_50%,rgba(45,212,191,0.18),transparent_30%)]" />
         <div className="container mx-auto px-4">
           <div className="relative z-10 h-8 md:h-9 flex items-center justify-between text-[11px] md:text-xs">
             <div className="hidden sm:flex items-center gap-2.5">
@@ -102,16 +102,16 @@ export default function Navigation() {
           </div>
         </div>
       </div>
-      <div className="bg-white/78 backdrop-blur-2xl border-b border-white/60 shadow-[0_24px_60px_-44px_rgba(2,6,23,0.55)]">
+      <div className="bg-white/80 backdrop-blur-2xl border-b border-white/70 shadow-[0_24px_60px_-44px_rgba(2,6,23,0.55)]">
         <div className="container mx-auto px-4 py-2">
-        <div className="flex justify-between items-center h-14 md:h-16 px-2 md:px-3 rounded-2xl border border-slate-200/80 bg-white/85 shadow-[0_20px_40px_-34px_rgba(15,23,42,0.4)]">
+        <div className="flex justify-between items-center h-14 md:h-16 px-2 md:px-4 rounded-3xl border border-slate-200/80 bg-gradient-to-r from-white/92 via-white to-white/92 shadow-[0_24px_50px_-38px_rgba(15,23,42,0.5)]">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 min-w-0">
             {navData?.logoImage?.image ? (
               <img
-                src={urlFor(navData.logoImage.image).width(200).height(200).fit("max").url()}
+                src={urlFor(navData.logoImage.image).width(220).height(220).fit("max").url()}
                 alt={navData.logoImage.alt || navData.logoText || "Logo"}
-                className="w-11 h-11 md:w-12 md:h-12 rounded-xl object-contain bg-white shadow-md shadow-emerald-200/40 p-1 flex-shrink-0 ring-1 ring-emerald-100"
+                className="w-12 h-12 md:w-[54px] md:h-[54px] rounded-2xl object-contain bg-white shadow-lg shadow-emerald-200/50 p-1.5 flex-shrink-0 ring-2 ring-emerald-100/80"
               />
             ) : (
               <div className="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-emerald-200/40 ring-1 ring-white/60">
@@ -129,12 +129,12 @@ export default function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2.5">
             {navigation.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative text-slate-700 hover:text-emerald-800 font-semibold transition-all text-sm whitespace-nowrap group px-3 py-2 rounded-full hover:bg-emerald-50/70"
+                className="relative text-slate-700 hover:text-emerald-900 font-semibold transition-all text-sm whitespace-nowrap group px-3.5 py-2 rounded-full hover:bg-emerald-50/90 border border-transparent hover:border-emerald-100"
               >
                 {item.name}
                 <span className="absolute left-3 right-3 -bottom-1 h-[2px] bg-gradient-to-r from-emerald-500 to-teal-400 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
@@ -145,7 +145,7 @@ export default function Navigation() {
             <div ref={langRefDesktop} className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50 transition-colors text-sm font-medium text-gray-700"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50/90 transition-colors text-sm font-medium text-gray-700 shadow-[0_10px_30px_-24px_rgba(16,185,129,0.9)]"
                 aria-label="Select language"
               >
                 <Globe className="h-4 w-4 text-emerald-600" />
@@ -170,7 +170,7 @@ export default function Navigation() {
             </div>
 
             <Link href="/register">
-              <Button className="bg-amber-300 text-slate-900 border border-amber-400 hover:bg-amber-200 px-3 py-1.5 rounded-full font-semibold text-sm shadow-sm transition-all">
+              <Button className="bg-gradient-to-r from-amber-300 via-amber-200 to-yellow-200 text-slate-900 border border-amber-300/80 hover:from-amber-200 hover:to-amber-300 px-4 py-2 rounded-full font-semibold text-sm shadow-[0_15px_35px_-24px_rgba(251,191,36,0.9)] transition-all">
                 {pickLocalizedText(language, navData?.navCta?.labelI18n, navData?.navCta?.label || "Apply Now")}
                 <span className="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-white">
                   <ArrowUpRight className="h-3.5 w-3.5" />
