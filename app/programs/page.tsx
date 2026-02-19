@@ -115,7 +115,7 @@ export default function ProgramsPage() {
       <Navigation />
 
       {/* Hero */}
-      <section className="relative py-20 md:py-32 overflow-hidden">
+      <section id="programs-hero" className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900" />
         <div className="absolute top-10 md:top-20 left-10 md:left-20 w-32 md:w-64 h-32 md:h-64 bg-emerald-500 rounded-full opacity-20 animate-pulse" />
         <div
@@ -147,7 +147,7 @@ export default function ProgramsPage() {
       </section>
 
       {/* MSP + STEPH + TCS Overview */}
-      <section className="py-12 md:py-16 bg-gradient-to-br from-emerald-50 to-teal-50">
+      <section id="engine" className="py-12 md:py-16 bg-gradient-to-br from-emerald-50 to-teal-50">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center">The MEED Academic Engine</h2>
@@ -179,7 +179,7 @@ export default function ProgramsPage() {
       </section>
 
       {/* Programs Detail */}
-      <section className="py-12 md:py-20">
+      <section id="programs" className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <div className="space-y-6">
             {programs.map((program, index) => (
@@ -287,7 +287,7 @@ export default function ProgramsPage() {
       </section>
 
       {/* Mother-Guide Model */}
-      <section className="py-12 md:py-16 bg-gray-50">
+      <section id="mother-guide" className="py-12 md:py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">The Mother-Guide Model (Pre-Primary)</h2>
@@ -310,7 +310,7 @@ export default function ProgramsPage() {
       </section>
 
       {/* Baseline Banding */}
-      <section className="py-12 md:py-16 bg-white">
+      <section id="baseline" className="py-12 md:py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6 text-center">Baseline Program & Banding Framework (PE)</h2>
@@ -343,7 +343,7 @@ export default function ProgramsPage() {
       </section>
 
       {/* Beyond Academics */}
-      <section className="py-12 md:py-20 bg-gray-50">
+      <section id="beyond" className="py-12 md:py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Beyond Academics</h2>
@@ -369,7 +369,7 @@ export default function ProgramsPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-12 md:py-16 bg-gradient-to-r from-emerald-600 to-teal-600">
+      <section id="programs-cta" className="py-12 md:py-16 bg-gradient-to-r from-emerald-600 to-teal-600">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{"Find Your Child's Perfect Program"}</h2>
           <p className="text-emerald-100 mb-8 max-w-2xl mx-auto">

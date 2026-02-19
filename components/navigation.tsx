@@ -25,6 +25,7 @@ export default function Navigation() {
   const langRefDesktop = useRef<HTMLDivElement>(null)
   const langRefMobile = useRef<HTMLDivElement>(null)
   const { language, setLanguage, t } = useLanguage()
+  const [openSub, setOpenSub] = useState<string | null>(null)
 
   // Close language dropdown on outside click
   useEffect(() => {
@@ -56,11 +57,34 @@ export default function Navigation() {
           { name: t("About"), href: "/about" },
           { name: t("Programs"), href: "/programs" },
           { name: t("Admissions"), href: "/admissions" },
-          { name: t("Fees"), href: "/pricing" },
+          { name: t("Meed Hostel"), href: "/pricing" },
           { name: t("Events"), href: "/events" },
           { name: t("Faculty"), href: "/faculty" },
           { name: t("Contact"), href: "/contact" },
         ]
+
+  const sectionLinks: Record<string, { label: string; href: string }[]> = {
+    "/about": [
+      { label: t("Meaning of MEED"), href: "/about#meaning" },
+      { label: t("Blueprint"), href: "/about#blueprint" },
+      { label: t("Movements"), href: "/about#movements" },
+      { label: t("Principles"), href: "/about#principles" },
+    ],
+    "/programs": [
+      { label: t("Academic Engine"), href: "/programs#engine" },
+      { label: t("Programs detail"), href: "/programs#programs" },
+      { label: t("Mother-Guide"), href: "/programs#mother-guide" },
+      { label: t("Baseline & Banding"), href: "/programs#baseline" },
+      { label: t("Beyond Academics"), href: "/programs#beyond" },
+    ],
+    "/admissions": [
+      { label: t("Why Meed"), href: "/admissions#difference" },
+      { label: t("Four Pillars"), href: "/admissions#pillars" },
+      { label: t("Testimonials"), href: "/admissions#testimonials" },
+      { label: t("Application Process"), href: "/admissions#process" },
+      { label: t("Fees & Scholarships"), href: "/pricing" },
+    ],
+  }
 
   const languages: Language[] = ["en", "hi", "ur", "bn"]
   const contactPhone = navData?.contactPhone || "+251 123 456 78"
@@ -70,18 +94,19 @@ export default function Navigation() {
 
   return (
     <nav className="sticky top-0 z-50">
+      {/* Top strip always visible, including mobile */}
       <div className="relative bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white border-b border-white/10 overflow-hidden shadow-[0_12px_40px_-28px_rgba(15,23,42,0.8)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_50%,rgba(16,185,129,0.22),transparent_32%),radial-gradient(circle_at_85%_50%,rgba(45,212,191,0.18),transparent_30%)]" />
-        <div className="container mx-auto px-4">
-          <div className="relative z-10 h-8 md:h-9 flex items-center justify-between text-[11px] md:text-xs">
-            <div className="hidden sm:flex items-center gap-2.5">
+        <div className="container mx-auto px-3 sm:px-4">
+          <div className="relative z-10 min-h-10 flex flex-wrap items-center gap-2 text-[11px] md:text-xs py-1">
+            <div className="flex items-center gap-2.5">
               <span className="inline-flex items-center rounded-full border border-emerald-300/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] md:text-[11px] tracking-wide font-semibold">
                 {t("2026 Admissions")}
               </span>
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse" />
-              <p className="text-white/80">{t("Applications open now")}</p>
+              <p className="text-white/80 whitespace-nowrap">{t("Applications open now")}</p>
             </div>
-            <div className="flex items-center gap-2 md:gap-2.5 ml-auto">
+            <div className="ml-auto flex items-center gap-2 md:gap-2.5">
               <a
                 href={telHref}
                 className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-2.5 py-1 hover:bg-white/20 hover:border-white/40 transition-all duration-200"
@@ -102,11 +127,13 @@ export default function Navigation() {
           </div>
         </div>
       </div>
-      <div className="bg-white/80 backdrop-blur-2xl border-b border-white/70 shadow-[0_24px_60px_-44px_rgba(2,6,23,0.55)]">
-        <div className="container mx-auto px-4 py-2">
-        <div className="flex justify-between items-center h-14 md:h-16 px-2 md:px-4 rounded-3xl border border-slate-200/80 bg-gradient-to-r from-white/92 via-white to-white/92 shadow-[0_24px_50px_-38px_rgba(15,23,42,0.5)]">
+
+      {/* Main nav, full-width (no pill box) */}
+      <div className="bg-white/90 backdrop-blur-xl border-b border-slate-100 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.4)]">
+        <div className="w-full px-3 sm:px-4 py-2">
+        <div className="max-w-7xl mx-auto flex justify-between items-center h-14 md:h-16 px-0 md:px-2">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 min-w-0">
+          <Link href="/" className="flex items-center gap-2 min-w-0 flex-shrink">
             {navData?.logoImage?.image ? (
               <img
                 src={urlFor(navData.logoImage.image).width(220).height(220).fit("max").url()}
@@ -119,57 +146,79 @@ export default function Navigation() {
               </div>
             )}
             <div className="min-w-0">
-                <div className="text-sm md:text-base font-semibold text-slate-900 truncate tracking-tight">
+                <div className="text-sm md:text-base font-semibold text-slate-900 tracking-tight leading-tight whitespace-nowrap truncate max-w-[220px]">
                 {pickLocalizedText(language, navData?.logoTextI18n, navData?.logoText || "Meed International School")}
                 </div>
-              <div className="text-[10px] md:text-[11px] text-emerald-700 truncate">
+              <div className="text-[10px] md:text-[11px] text-emerald-700 whitespace-nowrap truncate max-w-[220px] leading-snug">
                 {pickLocalizedText(language, navData?.logoSubtextI18n, navData?.logoSubtext || "Holistic Education for Dual Success")}
               </div>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-2.5">
-            {navigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="relative text-slate-700 hover:text-emerald-900 font-semibold transition-all text-sm whitespace-nowrap group px-3.5 py-2 rounded-full hover:bg-emerald-50/90 border border-transparent hover:border-emerald-100"
-              >
-                {item.name}
-                <span className="absolute left-3 right-3 -bottom-1 h-[2px] bg-gradient-to-r from-emerald-500 to-teal-400 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
-              </Link>
-            ))}
-
-            {/* Language Dropdown - Desktop */}
-            <div ref={langRefDesktop} className="relative">
-              <button
-                onClick={() => setLangOpen(!langOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50/90 transition-colors text-sm font-medium text-gray-700 shadow-[0_10px_30px_-24px_rgba(16,185,129,0.9)]"
-                aria-label="Select language"
-              >
-                <Globe className="h-4 w-4 text-emerald-600" />
-                <span>{languageShort[language]}</span>
-                <ChevronDown className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`} />
-              </button>
-              {langOpen && (
-                <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang}
-                      onClick={() => { setLanguage(lang); setLangOpen(false) }}
-                      className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-                        lang === language ? "bg-emerald-50 text-emerald-700 font-semibold" : "text-gray-700 hover:bg-gray-50"
-                      }`}
+          <div className="hidden lg:flex items-center gap-2 w-full">
+            <div className="flex items-center gap-2 flex-1 flex-nowrap overflow-visible justify-end">
+              {navigation.map((item) => {
+                const subs = sectionLinks[item.href] || []
+                return (
+                  <div key={item.href} className="relative group">
+                    <Link
+                      href={item.href}
+                      className="relative text-slate-700 hover:text-emerald-900 font-semibold transition-all text-sm whitespace-nowrap flex items-center gap-1.5 px-3.5 py-2 rounded-full hover:bg-emerald-50/90 border border-transparent hover:border-emerald-100"
                     >
-                      {languageLabels[lang]}
-                    </button>
-                  ))}
-                </div>
-              )}
+                      {item.name}
+                      {subs.length > 0 && <ChevronDown className="h-3.5 w-3.5 text-emerald-600 transition-transform group-hover:rotate-180" />}
+                      <span className="absolute left-3 right-3 -bottom-1 h-[2px] bg-gradient-to-r from-emerald-500 to-teal-400 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+                    </Link>
+                    {subs.length > 0 && (
+                      <div className="pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-150 absolute left-0 top-full mt-2 w-72 bg-white border border-gray-100 rounded-xl shadow-lg shadow-emerald-100/40 z-50">
+                        <div className="py-1">
+                          {subs.map((sub) => (
+                            <Link
+                              key={sub.href}
+                              href={sub.href}
+                              className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-emerald-50 hover:text-emerald-800"
+                            >
+                              {sub.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+
+              {/* Language Dropdown - Desktop */}
+              <div ref={langRefDesktop} className="relative">
+                <button
+                  onClick={() => setLangOpen(!langOpen)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 hover:border-emerald-300 hover:bg-emerald-50/90 transition-colors text-sm font-medium text-gray-700 shadow-[0_10px_30px_-24px_rgba(16,185,129,0.9)]"
+                  aria-label="Select language"
+                >
+                  <Globe className="h-4 w-4 text-emerald-600" />
+                  <span>{languageShort[language]}</span>
+                  <ChevronDown className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`} />
+                </button>
+                {langOpen && (
+                  <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => { setLanguage(lang); setLangOpen(false) }}
+                        className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                          lang === language ? "bg-emerald-50 text-emerald-700 font-semibold" : "text-gray-700 hover:bg-gray-50"
+                        }`}
+                      >
+                        {languageLabels[lang]}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
-            <Link href="/register">
+            <Link href="/register" className="flex-shrink-0">
               <Button className="bg-gradient-to-r from-amber-300 via-amber-200 to-yellow-200 text-slate-900 border border-amber-300/80 hover:from-amber-200 hover:to-amber-300 px-4 py-2 rounded-full font-semibold text-sm shadow-[0_15px_35px_-24px_rgba(251,191,36,0.9)] transition-all">
                 {pickLocalizedText(language, navData?.navCta?.labelI18n, navData?.navCta?.label || "Apply Now")}
                 <span className="ml-2 inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-white">
@@ -215,7 +264,7 @@ export default function Navigation() {
             </Link>
 
             {/* Hamburger */}
-            <button className="p-2 -mr-2" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
+            <button className="p-2 -mr-2" onClick={() => { setIsOpen(!isOpen); setOpenSub(null) }} aria-label="Toggle menu">
               {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
@@ -223,18 +272,49 @@ export default function Navigation() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden py-2 border-t border-gray-100 bg-white/95 backdrop-blur animate-in slide-in-from-top-2 duration-200 shadow-inner rounded-b-2xl">
-            <div className="flex flex-col gap-1">
-              {navigation.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="py-3 px-2 text-gray-700 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg font-medium text-sm transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
+          <div className="lg:hidden py-2 border-t border-gray-100 bg-white/95 backdrop-blur animate-in slide-in-from-top-2 duration-200 shadow-inner">
+            <div className="flex flex-col gap-1 max-h-[70vh] overflow-y-auto">
+              {navigation.map((item) => {
+                const subs = sectionLinks[item.href] || []
+                const isSubOpen = openSub === item.href
+                if (!subs.length) {
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="py-3 px-2 text-gray-700 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg font-medium text-sm transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  )
+                }
+                return (
+                  <div key={item.href} className="border border-gray-100 rounded-lg overflow-hidden bg-white">
+                    <button
+                      className="w-full flex items-center justify-between py-3 px-3 text-gray-800 font-semibold text-sm"
+                      onClick={() => setOpenSub(isSubOpen ? null : item.href)}
+                    >
+                      <span>{item.name}</span>
+                      <ChevronDown className={`h-4 w-4 transition-transform ${isSubOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    {isSubOpen && (
+                      <div className="flex flex-col border-t border-gray-100 bg-gray-50">
+                        {subs.map((sub) => (
+                          <Link
+                            key={sub.href}
+                            href={sub.href}
+                            className="py-2.5 pl-4 pr-3 text-sm text-gray-700 hover:text-emerald-700 hover:bg-emerald-50"
+                            onClick={() => { setIsOpen(false); setOpenSub(null) }}
+                          >
+                            {sub.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         )}

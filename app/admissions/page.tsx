@@ -27,7 +27,7 @@ export default function AdmissionsPage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32 overflow-hidden">
+      <section id="admissions-hero" className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900"></div>
 
         <div className="absolute top-5 md:top-10 left-5 md:left-10 w-32 md:w-64 h-32 md:h-64 bg-emerald-500 rounded-full opacity-20 animate-pulse"></div>
@@ -69,7 +69,7 @@ export default function AdmissionsPage() {
       </section>
 
       {/* The MEED Difference */}
-      <section className="py-12 md:py-20">
+      <section id="difference" className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">The Meed Difference</h2>
@@ -122,7 +122,7 @@ export default function AdmissionsPage() {
       </section>
 
       {/* MEED Pillars Summary */}
-      <section className="py-12 md:py-20 bg-gradient-to-br from-emerald-50 to-teal-50">
+      <section id="pillars" className="py-12 md:py-20 bg-gradient-to-br from-emerald-50 to-teal-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Built on Four Pillars</h2>
@@ -151,7 +151,7 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-12 md:py-20 bg-white">
+      <section id="testimonials" className="py-12 md:py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">What Our Families Say</h2>
@@ -197,7 +197,7 @@ export default function AdmissionsPage() {
       </section>
 
       {/* Application Process */}
-      <section className="py-12 md:py-20 bg-gray-50">
+      <section id="process" className="py-12 md:py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Simple Application Process</h2>
@@ -235,7 +235,7 @@ export default function AdmissionsPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-12 md:py-16 bg-gradient-to-r from-emerald-600 to-teal-600">
+      <section id="admissions-cta" className="py-12 md:py-16 bg-gradient-to-r from-emerald-600 to-teal-600">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Limited Spaces Available</h2>
           <p className="text-lg md:text-xl text-emerald-100 mb-6 md:mb-8 max-w-2xl mx-auto">

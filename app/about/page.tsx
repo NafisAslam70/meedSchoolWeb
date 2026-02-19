@@ -59,7 +59,7 @@ export default function AboutPage() {
       <Navigation />
 
       {/* Hero */}
-      <section className="relative py-20 md:py-32 overflow-hidden">
+      <section id="about-hero" className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-emerald-900 to-teal-900" />
         <div className="absolute top-10 md:top-20 left-10 md:left-20 w-32 md:w-64 h-32 md:h-64 bg-emerald-500 rounded-full opacity-10" />
         <div className="absolute bottom-10 right-10 md:right-20 w-40 md:w-80 h-40 md:h-80 bg-teal-500 rounded-full opacity-10" />
@@ -80,7 +80,7 @@ export default function AboutPage() {
       </section>
 
       {/* The Meaning of MEED */}
-      <section className="py-12 md:py-20 bg-white">
+      <section id="meaning" className="py-12 md:py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12 md:mb-16">
@@ -105,7 +105,7 @@ export default function AboutPage() {
       </section>
 
       {/* The MEED Blueprint */}
-      <section className="py-12 md:py-20 bg-gray-50">
+      <section id="blueprint" className="py-12 md:py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12 md:mb-16">
@@ -145,7 +145,7 @@ export default function AboutPage() {
       </section>
 
       {/* Four Pillars */}
-      <section className="py-12 md:py-20 bg-white">
+      <section id="movements" className="py-12 md:py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">The Four Movements</h2>
@@ -188,7 +188,7 @@ export default function AboutPage() {
       </section>
 
       {/* Foundational Principles */}
-      <section className="py-12 md:py-20 bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white">
+      <section id="principles" className="py-12 md:py-20 bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Five Foundational Principles</h2>

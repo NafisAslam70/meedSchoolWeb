@@ -11,7 +11,7 @@ import Footer from "@/components/footer"
 import Link from "next/link"
 import { pickLocalizedText } from "@/lib/cms-i18n"
 
-export default function PricingPage() {
+export default function HostelPage() {
   const { t, language } = useLanguage()
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual")
   const [cms, setCms] = useState<any | null>(null)
@@ -27,92 +27,87 @@ export default function PricingPage() {
 
   const pricingPlans = [
     {
-      name: "Pre-Primary",
-      description: "Nursery, LKG, UKG (Ages 3-6)",
+      name: "Single Ensuite",
+      description: "Private room, attached bath",
       icon: Heart,
       color: "from-pink-500 to-rose-500",
-      monthly: 1200,
-      annual: 12000,
+      monthly: 5200,
+      annual: 52000,
       popular: false,
       features: [
-        "Play-based holistic curriculum",
-        "Observation-based assessment (no exams)",
-        "Developmental milestone tracking",
-        "Qualified early childhood educators",
-        "Portfolio of child's creative work",
-        "Descriptive narrative reports each term",
-        "Parent-teacher conferences",
-        "Nurturing, child-centric environment",
+        "Fully furnished private room with study desk",
+        "AC + high-speed Wi‑Fi + weekly deep cleaning",
+        "Individual wardrobe & secure storage",
+        "24/7 pastoral care and nurse-on-call",
+        "Structured study hall (evening, proctored)",
+        "Daily laundry service",
+        "Prayer & mindfulness room access",
+        "Healthy 4-meal plan (breakfast, lunch, snacks, dinner)",
       ],
     },
     {
-      name: "Lower Primary",
-      description: "Classes 1-2 (Ages 6-8)",
+      name: "Twin Sharing",
+      description: "Two students, attached bath",
       icon: BookOpen,
       color: "from-emerald-500 to-teal-500",
-      monthly: 1500,
-      annual: 15000,
-      popular: false,
-      features: [
-        "Gentle transition to structured learning",
-        "FA/SA hybrid assessment model",
-        "Oral and activity-based formative assessments",
-        "Life skills grading (A+ to C scale)",
-        "Attitudes and values evaluation",
-        "Art, music, and physical education",
-        "Library access and reading programs",
-        "Co-scholastic descriptive feedback",
-      ],
-    },
-    {
-      name: "Upper Primary",
-      description: "Classes 3-5 (Ages 8-11)",
-      icon: Brain,
-      color: "from-teal-500 to-cyan-500",
-      monthly: 1800,
-      annual: 18000,
+      monthly: 4200,
+      annual: 42000,
       popular: true,
       features: [
-        "Comprehensive MEED curriculum",
-        "9-point grading scale (A1 to E2)",
-        "Diverse formative assessments",
-        "Subject-wise competency tracking",
-        "Academic enrichment and Olympiads",
-        "Co-scholastic rubric evaluation",
-        "Student self-assessment introduction",
-        "40% formative + 60% summative model",
-        "Community service programs",
+        "Spacious twin room with study zones",
+        "AC + Wi‑Fi + housekeeping thrice weekly",
+        "Wardrobe per student; lockable drawers",
+        "Evening supervised prep + subject mentors",
+        "Resident life skills coordinator on floor",
+        "Laundry twice a week",
+        "Sports access: gym, futsal, table tennis",
+        "Nutritious 4-meal plan with fruit & hydration",
       ],
     },
     {
-      name: "Middle School",
-      description: "Classes 6-8 (Ages 11-14)",
-      icon: Users,
-      color: "from-cyan-500 to-blue-500",
-      monthly: 2200,
-      annual: 22000,
+      name: "Junior Dorm Suite",
+      description: "4-bed suite, shared bath",
+      icon: Brain,
+      color: "from-teal-500 to-cyan-500",
+      monthly: 3600,
+      annual: 36000,
       popular: false,
       features: [
-        "Advanced MEED evaluation framework",
-        "Full T1-T4 holistic performance bands",
-        "Capstone project in Class 8",
-        "Reflective journals and self-assessment",
-        "External scholastic benchmarks",
-        "Leadership development programs",
-        "Specialized subject teachers",
-        "Career guidance and mentoring",
-        "Peer tutoring and mentorship",
-        "University preparation mindset",
+        "Comfort bunk suite with privacy curtains",
+        "Dedicated quiet hours and lights-out routines",
+        "Evening academic clinics for core subjects",
+        "Weekend enrichment: coding, arts, Quran circles",
+        "House parents on each wing",
+        "Weekly room inspection & mentoring check-ins",
+        "Safety-first access control and CCTV in common areas",
+        "Balanced 4-meal plan + hydration stations",
+      ],
+    },
+    {
+      name: "Day Scholar Meal Plan",
+      description: "For day students",
+      icon: Users,
+      color: "from-cyan-500 to-blue-500",
+      monthly: 900,
+      annual: 9000,
+      popular: false,
+      features: [
+        "Campus meals: lunch + evening snacks + hydration",
+        "Access to evening supervised study hall",
+        "Locker storage on campus",
+        "After-school clubs and weekend events",
+        "Nurse station and wellness support",
+        "Transport add-on available",
       ],
     },
   ]
 
   const additionalFees = [
-    { name: "Registration Fee", amount: 500, description: "One-time enrollment fee" },
-    { name: "Uniform Package", amount: 300, description: "Complete school uniform set" },
-    { name: "Books and Materials", amount: 400, description: "Annual textbooks and supplies" },
-    { name: "Transportation", amount: 200, description: "Monthly bus service (optional)" },
-    { name: "Lunch Program", amount: 150, description: "Monthly meal plan (optional)" },
+    { name: "Hostel Admission Fee", amount: 1200, description: "One-time onboarding & room setup" },
+    { name: "Security Deposit (refundable)", amount: 2000, description: "Refunded at checkout if no damages" },
+    { name: "Laundry Add-on", amount: 200, description: "For extra loads beyond included service" },
+    { name: "Airport Pickup", amount: 300, description: "Optional arrival pickup (Addis Ababa)" },
+    { name: "Transport (Day Scholars)", amount: 250, description: "Monthly bus service (optional)" },
   ]
 
   return (
@@ -124,16 +119,11 @@ export default function PricingPage() {
         <div className="text-center mb-16">
           <div className="inline-flex items-center bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-medium mb-6">
             <Star className="w-4 h-4 mr-2" />
-            {pickLocalizedText(language, cms?.heroSubtitleI18n, cms?.heroSubtitle || "Pre-Primary through Class 8")}
+            Boarding & Pastoral Care
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">{pickLocalizedText(language, cms?.heroTitleI18n, cms?.heroTitle || "Fees & Tuition")}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Meed Hostel</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            {pickLocalizedText(
-              language,
-              cms?.heroSubtitleI18n,
-              cms?.heroSubtitle ||
-                "Invest in your child's holistic development. Our programs include comprehensive academic curriculum plus the MEED evaluation framework that tracks character alongside academics."
-            )}
+            Safe, supervised boarding with structured routines, academic support, and nourishing meals designed around the MEED ethos.
           </p>
 
           {/* Billing Toggle */}
@@ -251,9 +241,9 @@ export default function PricingPage() {
         {/* What's Included */}
         <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl shadow-xl p-8 text-white mb-16">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Every Plan Includes the MEED Framework</h2>
+            <h2 className="text-3xl font-bold mb-4">Included with Every Hostel Plan</h2>
             <p className="text-emerald-100 text-lg">
-              Regardless of grade level, every student benefits from our holistic evaluation system
+              Care, safety, and growth built into daily life.
             </p>
           </div>
 
@@ -262,44 +252,43 @@ export default function PricingPage() {
               <div className="bg-white bg-opacity-20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold">1</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Holistic Report Cards</h3>
-              <p className="text-emerald-100">Scholastic and co-scholastic evaluation with descriptive feedback every term</p>
+              <h3 className="text-xl font-semibold mb-2">Pastoral Care 24/7</h3>
+              <p className="text-emerald-100">House parents, nurse-on-call, and night supervisors for round-the-clock safety.</p>
             </div>
 
             <div className="text-center">
               <div className="bg-white bg-opacity-20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold">2</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Character Tracking</h3>
-              <p className="text-emerald-100">Life skills, attitudes, values, and spiritual development formally assessed</p>
+              <h3 className="text-xl font-semibold mb-2">Structured Study Hall</h3>
+              <p className="text-emerald-100">Evening prep with academic mentors aligned to the MEED timetable.</p>
             </div>
 
             <div className="text-center">
               <div className="bg-white bg-opacity-20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold">3</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Parent Partnership</h3>
-              <p className="text-emerald-100">Regular conferences, detailed feedback, and guidance to reinforce learning at home</p>
+              <h3 className="text-xl font-semibold mb-2">Wellness & Nutrition</h3>
+              <p className="text-emerald-100">Balanced menus, hydration stations, prayer spaces, and weekend recreation.</p>
             </div>
           </div>
         </div>
 
         {/* Financial Aid Section */}
         <div className="text-center bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Financial Assistance Available</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Visit the Hostel</h2>
           <p className="text-gray-600 text-lg mb-6 max-w-2xl mx-auto">
-            We believe every child deserves holistic education. Meed International School offers need-based financial aid
-            and merit scholarships to qualified families.
+            Tour the rooms, meet the house parents, and see evening study hall in action. We’ll tailor a plan for your child’s needs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3">
-              Apply for Financial Aid
+              Book a Hostel Tour
             </Button>
             <Button
               variant="outline"
               className="border-emerald-600 text-emerald-600 hover:bg-emerald-50 bg-transparent px-8 py-3"
             >
-              Schedule Consultation
+              Talk to a House Parent
             </Button>
           </div>
         </div>
