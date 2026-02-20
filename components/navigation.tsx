@@ -26,6 +26,13 @@ export default function Navigation() {
   const langRefMobile = useRef<HTMLDivElement>(null)
   const { language, setLanguage, t } = useLanguage()
   const [openSub, setOpenSub] = useState<string | null>(null)
+  const topStripLangContent = [
+    { code: "en", admissions: "2026 Admissions", open: "Applications open now", call: "Call now", whatsapp: "WhatsApp now" },
+    { code: "hi", admissions: "2026 प्रवेश", open: "आवेदन खुले हैं", call: "अभी कॉल करें", whatsapp: "व्हाट्सऐप करें" },
+    { code: "ur", admissions: "داخلے جاری ہیں 2026", open: "درخواستیں کھلی ہیں", call: "ابھی کال کریں", whatsapp: "واٹس ایپ کریں" },
+    { code: "bn", admissions: "২০২৬ ভর্তি চলছে", open: "আবেদন এখন খোলা", call: "কল করুন", whatsapp: "হোয়াটসঅ্যাপ করুন" },
+  ]
+  const [rotatingLangIndex, setRotatingLangIndex] = useState(0)
 
   // Close language dropdown on outside click
   useEffect(() => {
@@ -48,6 +55,16 @@ export default function Navigation() {
       })
       .catch(() => {})
   }, [])
+
+  // Rotate language labels in the top strip
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setRotatingLangIndex((prev) => (prev + 1) % topStripLangContent.length)
+    }, 2200)
+    return () => window.clearInterval(id)
+  }, [])
+
+  const strip = topStripLangContent[rotatingLangIndex]
 
   const navigationBase =
     navData?.navLinks?.length
@@ -114,10 +131,10 @@ export default function Navigation() {
           <div className="relative z-10 min-h-12 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2.5 text-[11px] md:text-xs py-2">
           <div className="flex items-center gap-2.5 text-center sm:text-left justify-center sm:justify-start">
               <span className="inline-flex items-center rounded-full border border-emerald-300/30 bg-emerald-400/15 px-2.5 py-1 text-[10px] md:text-[11px] tracking-wide font-semibold shadow-[0_10px_30px_-20px_rgba(16,185,129,0.8)]">
-                {t("2026 Admissions")}
+                {strip.admissions}
               </span>
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse" />
-              <p className="text-white/80 whitespace-nowrap">{t("Applications open now")}</p>
+              <p className="text-white/80 whitespace-nowrap">{strip.open}</p>
             </div>
             <div className="flex sm:ml-auto items-center gap-2 w-full sm:w-auto">
               <a
@@ -125,7 +142,7 @@ export default function Navigation() {
                 className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 hover:bg-white/20 hover:border-white/40 transition-all duration-200 text-[11px]"
               >
                 <PhoneCall className="h-3.5 w-3.5" />
-                <span className="font-medium">{t("Call now")}</span>
+                <span className="font-medium">{strip.call}</span>
               </a>
               <a
                 href={waHref}
@@ -134,7 +151,7 @@ export default function Navigation() {
                 className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-full border border-emerald-300/50 bg-emerald-500/25 px-3 py-1.5 hover:bg-emerald-500/35 hover:border-emerald-300/70 transition-all duration-200 text-[11px]"
               >
                 <MessageCircle className="h-3.5 w-3.5" />
-                <span className="font-medium">{t("WhatsApp now")}</span>
+                <span className="font-medium">{strip.whatsapp}</span>
               </a>
             </div>
           </div>

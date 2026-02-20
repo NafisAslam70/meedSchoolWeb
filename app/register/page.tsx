@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export default function RegisterPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -57,10 +58,10 @@ export default function RegisterPage() {
     setFormStatus({ type: null, message: null })
 
     try {
-      if (!formData.phone) {
+      if (!formData.phone || !formData.parent_name) {
         setFormStatus({
           type: "error",
-          message: "Phone number is required.",
+          message: "Guardian name and phone are required.",
         })
         setIsSubmitting(false)
         return
@@ -181,7 +182,7 @@ export default function RegisterPage() {
                 <CardTitle className="text-2xl md:text-3xl font-bold text-gray-900">
                   Student Registration Form
                 </CardTitle>
-                <p className="text-gray-600 mt-2">Quick submission. Only phone number is required.</p>
+                <p className="text-gray-600 mt-2">Quick submission. Guardian name and phone are required; everything else is optional.</p>
               </CardHeader>
               <CardContent className="space-y-6">
                 {formStatus.type && formStatus.message && (
@@ -193,9 +194,23 @@ export default function RegisterPage() {
                 )}
 
                 <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-                  {/* Student Information */}
+                  {/* Guardian Contact (required) */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Contact</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Guardian Contact (Required)</h3>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="parent_name">Guardian Full Name *</Label>
+                      <Input
+                        id="parent_name"
+                        name="parent_name"
+                        type="text"
+                        required
+                        value={formData.parent_name}
+                        onChange={(e) => handleInputChange("parent_name", e.target.value)}
+                        placeholder="Enter guardian full name"
+                        className="w-full"
+                      />
+                    </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="phone">Phone Number *</Label>
@@ -210,72 +225,9 @@ export default function RegisterPage() {
                         className="w-full"
                       />
                     </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Student Information (Optional)</h3>
 
                     <div className="space-y-2">
-                      <Label htmlFor="student_name">Student Full Name</Label>
-                      <Input
-                        id="student_name"
-                        name="student_name"
-                        type="text"
-                        value={formData.student_name}
-                        onChange={(e) => handleInputChange("student_name", e.target.value)}
-                        placeholder="Enter student's full name"
-                        className="w-full"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="grade">Grade Level</Label>
-                      <Select
-                        name="grade"
-                        value={formData.grade}
-                        onValueChange={(value) => handleInputChange("grade", value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select grade level (optional)" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="kindergarten">Kindergarten</SelectItem>
-                          <SelectItem value="1st">1st Grade</SelectItem>
-                          <SelectItem value="2nd">2nd Grade</SelectItem>
-                          <SelectItem value="3rd">3rd Grade</SelectItem>
-                          <SelectItem value="4th">4th Grade</SelectItem>
-                          <SelectItem value="5th">5th Grade</SelectItem>
-                          <SelectItem value="6th">6th Grade</SelectItem>
-                          <SelectItem value="7th">7th Grade</SelectItem>
-                          <SelectItem value="8th">8th Grade</SelectItem>
-                          <SelectItem value="9th">9th Grade</SelectItem>
-                          <SelectItem value="10th">10th Grade</SelectItem>
-                          <SelectItem value="11th">11th Grade</SelectItem>
-                          <SelectItem value="12th">12th Grade</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  {/* Parent/Guardian Information */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Parent/Guardian Information (Optional)</h3>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="parent_name">Parent/Guardian Full Name</Label>
-                      <Input
-                        id="parent_name"
-                        name="parent_name"
-                        type="text"
-                        value={formData.parent_name}
-                        onChange={(e) => handleInputChange("parent_name", e.target.value)}
-                        placeholder="Enter parent/guardian full name"
-                        className="w-full"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
+                      <Label htmlFor="email">Email Address (Optional)</Label>
                       <Input
                         id="email"
                         name="email"
@@ -286,38 +238,74 @@ export default function RegisterPage() {
                         className="w-full"
                       />
                     </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number *</Label>
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        required
-                        value={formData.phone}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
-                        placeholder="Enter phone number (e.g., +251912345678)"
-                        className="w-full"
-                      />
-                    </div>
                   </div>
 
-                  {/* Additional Information */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Additional Information</h3>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="student">
+                      <AccordionTrigger className="text-lg font-semibold text-gray-900">Student Information (Optional)</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="student_name">Student Full Name</Label>
+                            <Input
+                              id="student_name"
+                              name="student_name"
+                              type="text"
+                              value={formData.student_name}
+                              onChange={(e) => handleInputChange("student_name", e.target.value)}
+                              placeholder="Enter student's full name"
+                              className="w-full"
+                            />
+                          </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Additional Comments (Optional)</Label>
-                      <Textarea
-                        id="message"
-                        name="message"
-                        value={formData.message}
-                        onChange={(e) => handleInputChange("message", e.target.value)}
-                        placeholder="Any additional information you'd like to share..."
-                        className="w-full min-h-[100px]"
-                      />
-                    </div>
-                  </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="grade">Grade Level</Label>
+                            <Select
+                              name="grade"
+                              value={formData.grade}
+                              onValueChange={(value) => handleInputChange("grade", value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select grade level (optional)" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="kindergarten">Kindergarten</SelectItem>
+                                <SelectItem value="1st">1st Grade</SelectItem>
+                                <SelectItem value="2nd">2nd Grade</SelectItem>
+                                <SelectItem value="3rd">3rd Grade</SelectItem>
+                                <SelectItem value="4th">4th Grade</SelectItem>
+                                <SelectItem value="5th">5th Grade</SelectItem>
+                                <SelectItem value="6th">6th Grade</SelectItem>
+                                <SelectItem value="7th">7th Grade</SelectItem>
+                                <SelectItem value="8th">8th Grade</SelectItem>
+                                <SelectItem value="9th">9th Grade</SelectItem>
+                                <SelectItem value="10th">10th Grade</SelectItem>
+                                <SelectItem value="11th">11th Grade</SelectItem>
+                                <SelectItem value="12th">12th Grade</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    <AccordionItem value="additional">
+                      <AccordionTrigger className="text-lg font-semibold text-gray-900">Additional Information</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-2">
+                          <Label htmlFor="message">Additional Comments (Optional)</Label>
+                          <Textarea
+                            id="message"
+                            name="message"
+                            value={formData.message}
+                            onChange={(e) => handleInputChange("message", e.target.value)}
+                            placeholder="Any additional information you'd like to share..."
+                            className="w-full min-h-[100px]"
+                          />
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
 
                   {/* Submit Button */}
                   <div className="pt-6">

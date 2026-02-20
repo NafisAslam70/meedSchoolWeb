@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   BookOpen, Phone, Users, Award, Globe, Shield, Lightbulb, Zap, Heart,
-  Eye, Repeat, Search, Clock,
+  Eye, Repeat, Search, Clock, Sparkles,
 } from "lucide-react"
 import { GallerySlider } from "@/components/gallery-slider"
 import Navigation from "@/components/navigation"
@@ -50,10 +50,11 @@ const WaveBottom = ({ color = "white" }: { color?: string }) => (
 )
 
 export default function HomePage() {
-  const { t, language } = useLanguage()
+  const { t, language, setLanguage } = useLanguage()
   const [cms, setCms] = useState<CMSHome | null>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [activeSection, setActiveSection] = useState("Hero")
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
 
   useEffect(() => {
     fetch("/api/cms/home")
@@ -62,6 +63,14 @@ export default function HomePage() {
         if (res.success) setCms(res.data)
       })
       .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const seen = typeof window !== "undefined" ? sessionStorage.getItem("homeLandingModalSeen") : "yes"
+    if (!seen) {
+      setShowWelcomeModal(true)
+      sessionStorage.setItem("homeLandingModalSeen", "yes")
+    }
   }, [])
 
   useEffect(() => {
@@ -249,6 +258,91 @@ export default function HomePage() {
         </div>
       </div>
       <Navigation />
+
+      {showWelcomeModal && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-[3px]" onClick={() => setShowWelcomeModal(false)} />
+          <div className="relative w-full max-w-3xl overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-800 text-white border border-emerald-500/30">
+            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.2),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(16,185,129,0.35),transparent_42%)]" />
+            <div className="relative p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8">
+              <div className="flex-1 space-y-3">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em]">
+                  <Sparkles className="h-4 w-4" />
+                  Admissions open — few seats left
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold leading-tight">Secure your child's seat this term</h2>
+                <p className="text-emerald-50/90 text-sm md:text-base leading-relaxed">
+                  Share your phone number and our admissions guide will call you within 6 hours. No fees, no paperwork to start—just a quick hello.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { code: "en", label: "English" },
+                    { code: "hi", label: "हिंदी" },
+                    { code: "ur", label: "اردو" },
+                    { code: "bn", label: "বাংলা" },
+                  ].map((l) => (
+                    <button
+                      key={l.code}
+                      onClick={() => setLanguage(l.code as any)}
+                      className={`px-3 py-1 rounded-full border text-xs font-semibold ${
+                        language === l.code
+                          ? "bg-white text-emerald-800 border-white"
+                          : "border-white/40 text-white hover:bg-white/10"
+                      }`}
+                    >
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-2 text-sm md:text-base font-semibold text-emerald-100">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15">
+                    <Phone className="h-4 w-4" />
+                    Call-back priority
+                  </span>
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15">
+                    <Users className="h-4 w-4" />
+                    Limited seats remaining
+                  </span>
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15">
+                    <Shield className="h-4 w-4" />
+                    Zero registration fee
+                  </span>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 pt-1">
+                  <Link href="/register" onClick={() => setShowWelcomeModal(false)}>
+                    <Button className="w-full sm:w-auto bg-white text-emerald-800 hover:bg-emerald-50 shadow-lg shadow-emerald-900/30">
+                      Apply in 30 seconds
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outline"
+                    className="w-full sm:w-auto border-white/60 text-white hover:bg-white/10"
+                    onClick={() => setShowWelcomeModal(false)}
+                  >
+                    Maybe later
+                  </Button>
+                </div>
+              </div>
+              <div className="w-full md:w-64 lg:w-72 h-48 md:h-auto relative overflow-hidden rounded-xl border border-white/15 bg-white/10 flex items-center justify-center">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.25),transparent_40%),radial-gradient(circle_at_70%_70%,rgba(16,185,129,0.35),transparent_45%)]" />
+                <div className="relative text-center px-4 py-6 space-y-3">
+                  <div className="text-5xl font-black tracking-tight">6h</div>
+                  <div className="text-sm uppercase tracking-[0.22em] text-emerald-50/80">Call-back Window</div>
+                  <div className="text-xs text-emerald-50/70 leading-relaxed">Submit now to get priority counseling and tour scheduling.</div>
+                </div>
+              </div>
+            </div>
+            <button
+              aria-label="Close"
+              onClick={() => setShowWelcomeModal(false)}
+              className="absolute top-3 right-3 text-white/80 hover:text-white focus:outline-none text-xl"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       <div data-section-label="Hero">
         <HeroSlider slides={heroSlides} />
       </div>
