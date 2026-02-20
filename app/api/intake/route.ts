@@ -52,6 +52,24 @@ export async function POST(req: Request) {
       })
     }
 
+    // 3) MeediadFlow Student Enquiry app (best-effort fan-out)
+    if (externalIntakeUrl) {
+      fetch(externalIntakeUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(externalToken ? { "x-public-token": externalToken } : {}),
+        },
+        body: JSON.stringify({
+          name: fullName || "Visitor",
+          phone,
+          email,
+          message: note,
+          source,
+        }),
+      }).catch((err) => console.error("MeediadFlow intake error", err))
+    }
+
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error("Intake error", err)
@@ -61,3 +79,5 @@ export async function POST(req: Request) {
     )
   }
 }
+const externalIntakeUrl = process.env.MEEDIAFLOW_INTAKE_URL
+const externalToken = process.env.MEEDIAFLOW_TOKEN
