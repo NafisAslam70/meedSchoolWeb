@@ -20,11 +20,18 @@ export default function RegisterPage() {
     message: string | null
   }>({ type: null, message: null })
   const [showBanner, setShowBanner] = useState(true)
+  const [showModal, setShowModal] = useState(false)
 
   const formRef = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
     setShowBanner(true)
+
+    const hasSeenModal = typeof window !== "undefined" ? sessionStorage.getItem("admissionsModalSeen") : "yes"
+    if (!hasSeenModal) {
+      setShowModal(true)
+      sessionStorage.setItem("admissionsModalSeen", "yes")
+    }
   }, [])
 
   const [formData, setFormData] = useState({
@@ -96,6 +103,35 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowModal(false)} />
+          <div className="relative max-w-lg w-full bg-white rounded-2xl shadow-2xl p-6 space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="h-3 w-3 mt-2 rounded-full bg-amber-500 animate-pulse" />
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold text-gray-900">Admissions are open</h3>
+                <p className="text-gray-700 mt-1">
+                  Only a few seats left for this term. Share your phone number now and our team will call you right
+                  away. Everything else is optional.
+                </p>
+              </div>
+              <button
+                type="button"
+                aria-label="Close"
+                className="text-gray-500 hover:text-gray-800 text-lg"
+                onClick={() => setShowModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <Button className="w-full bg-emerald-600 hover:bg-emerald-700" onClick={() => setShowModal(false)}>
+              Got it, let's start
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden">
