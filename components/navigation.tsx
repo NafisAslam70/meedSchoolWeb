@@ -49,7 +49,7 @@ export default function Navigation() {
       .catch(() => {})
   }, [])
 
-  const navigation =
+  const navigationBase =
     navData?.navLinks?.length
       ? navData.navLinks.map((l) => ({ name: pickLocalizedText(language, l.labelI18n, l.label), href: l.href }))
       : [
@@ -63,11 +63,18 @@ export default function Navigation() {
           { name: t("Contact"), href: "/contact" },
         ]
 
-  const mappedNavigation = navigation
-    .filter((item) => item.href !== "/pricing") // drop pricing from top-level
-    .map((item) =>
-      item.href === "/hostel" ? { ...item, name: t("Meed Hostel") } : item
-    )
+  // ensure hostel is always present, remove pricing from top-level
+  const mappedNavigation = (() => {
+    const withoutPricing = navigationBase.filter((item) => item.href !== "/pricing")
+    const hasHostel = withoutPricing.some((item) => item.href === "/hostel")
+    if (!hasHostel) {
+      // insert hostel after admissions if present, else append
+      const idx = withoutPricing.findIndex((i) => i.href === "/admissions")
+      const insertAt = idx >= 0 ? idx + 1 : withoutPricing.length
+      withoutPricing.splice(insertAt, 0, { name: t("Meed Hostel"), href: "/hostel" })
+    }
+    return withoutPricing
+  })()
 
   const sectionLinks: Record<string, { label: string; href: string }[]> = {
     "/about": [
@@ -104,18 +111,18 @@ export default function Navigation() {
       <div className="relative bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white border-b border-white/10 overflow-hidden shadow-[0_12px_40px_-28px_rgba(15,23,42,0.8)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_50%,rgba(16,185,129,0.22),transparent_32%),radial-gradient(circle_at_85%_50%,rgba(45,212,191,0.18),transparent_30%)]" />
         <div className="container mx-auto px-3 sm:px-4">
-          <div className="relative z-10 min-h-10 flex flex-wrap items-center gap-2 text-[11px] md:text-xs py-1">
-            <div className="flex items-center gap-2.5">
-              <span className="inline-flex items-center rounded-full border border-emerald-300/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] md:text-[11px] tracking-wide font-semibold">
+          <div className="relative z-10 min-h-12 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2.5 text-[11px] md:text-xs py-2">
+          <div className="flex items-center gap-2.5 text-center sm:text-left justify-center sm:justify-start">
+              <span className="inline-flex items-center rounded-full border border-emerald-300/30 bg-emerald-400/15 px-2.5 py-1 text-[10px] md:text-[11px] tracking-wide font-semibold shadow-[0_10px_30px_-20px_rgba(16,185,129,0.8)]">
                 {t("2026 Admissions")}
               </span>
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse" />
               <p className="text-white/80 whitespace-nowrap">{t("Applications open now")}</p>
             </div>
-            <div className="ml-auto flex items-center gap-2 md:gap-2.5">
+            <div className="flex sm:ml-auto items-center gap-2 w-full sm:w-auto">
               <a
                 href={telHref}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-2.5 py-1 hover:bg-white/20 hover:border-white/40 transition-all duration-200"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 hover:bg-white/20 hover:border-white/40 transition-all duration-200 text-[11px]"
               >
                 <PhoneCall className="h-3.5 w-3.5" />
                 <span className="font-medium">{t("Call now")}</span>
@@ -124,7 +131,7 @@ export default function Navigation() {
                 href={waHref}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/50 bg-emerald-500/25 px-2.5 py-1 hover:bg-emerald-500/35 hover:border-emerald-300/70 transition-all duration-200"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-full border border-emerald-300/50 bg-emerald-500/25 px-3 py-1.5 hover:bg-emerald-500/35 hover:border-emerald-300/70 transition-all duration-200 text-[11px]"
               >
                 <MessageCircle className="h-3.5 w-3.5" />
                 <span className="font-medium">{t("WhatsApp now")}</span>
@@ -321,6 +328,14 @@ export default function Navigation() {
                   </div>
                 )
               })}
+
+              <div className="pt-2 pb-3 px-1">
+                <Link href="/register" onClick={() => setIsOpen(false)}>
+                  <Button className="w-full justify-center bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-semibold py-3">
+                    {pickLocalizedText(language, navData?.navCta?.labelI18n, navData?.navCta?.label || "Apply Now")}
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         )}

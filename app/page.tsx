@@ -238,6 +238,8 @@ export default function HomePage() {
     return merged.filter((img, i, arr) => arr.findIndex((x) => x.src === img.src) === i).slice(0, 8)
   }, [heroSlides, ecosystemGallery, assessmentGallery])
 
+  const fallbackIcons = [Lightbulb, Shield, Zap, Heart, Eye, Repeat, Search, Clock]
+
   return (
     <div className="min-h-screen bg-background">
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 md:hidden rounded-full border border-white/60 bg-white/85 backdrop-blur-xl px-4 py-2 shadow-lg">
@@ -267,7 +269,7 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
             {visionCards.map((item: any, i: number) => {
-              const Icon = item.icon || Lightbulb
+              const Icon = item.icon || fallbackIcons[i % fallbackIcons.length]
               return (
                 <div
                   key={i}

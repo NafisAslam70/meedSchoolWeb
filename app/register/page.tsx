@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Navigation from "@/components/navigation"
 import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -19,8 +19,13 @@ export default function RegisterPage() {
     type: "success" | "error" | null
     message: string | null
   }>({ type: null, message: null })
+  const [showBanner, setShowBanner] = useState(true)
 
   const formRef = useRef<HTMLFormElement>(null)
+
+  useEffect(() => {
+    setShowBanner(true)
+  }, [])
 
   const [formData, setFormData] = useState({
     student_name: "",
@@ -45,70 +50,30 @@ export default function RegisterPage() {
     setFormStatus({ type: null, message: null })
 
     try {
-      if (!formData.student_name || !formData.grade || !formData.parent_name || !formData.email || !formData.phone) {
+      if (!formData.phone) {
         setFormStatus({
           type: "error",
-          message: "Please fill in all required fields.",
+          message: "Phone number is required.",
         })
         setIsSubmitting(false)
         return
       }
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(formData.email)) {
-        setFormStatus({
-          type: "error",
-          message: "Please enter a valid email address.",
-        })
-        setIsSubmitting(false)
-        return
-      }
-
-      const paymentResponse = await fetch("/api/pay", {
+      const response = await fetch("/api/save-registration", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, payment_status: "not_required" }),
       })
 
-      let paymentResult
-      try {
-        paymentResult = await paymentResponse.json()
-      } catch (parseError) {
-        setFormStatus({
-          type: "error",
-          message: "Invalid response from payment service. Please try again.",
-        })
-        setIsSubmitting(false)
-        return
-      }
-
-      if (paymentResult.success && paymentResult.url) {
-        if (typeof window !== "undefined") {
-          const registrationData = {
-            ...formData,
-            tx_ref: paymentResult.tx_ref,
-            initiated_at: new Date().toISOString(),
-            status: "payment_initiated",
-          }
-          localStorage.setItem("pendingRegistration", JSON.stringify(registrationData))
-        }
-
-        window.location.href = paymentResult.url
+      if (response.ok) {
+        setFormStatus({ type: "success", message: "Submitted! Our team will contact you soon." })
+        setFormData({ student_name: "", grade: "", parent_name: "", email: "", phone: "", message: "" })
+        formRef.current?.reset()
       } else {
-        let errorMessage = "Failed to initiate payment. Please try again."
-
-        if (paymentResult && typeof paymentResult.message === "string") {
-          errorMessage = paymentResult.message
-        } else if (paymentResult && paymentResult.message) {
-          errorMessage = JSON.stringify(paymentResult.message)
-        }
-
-        setFormStatus({
-          type: "error",
-          message: errorMessage,
-        })
+        const error = await response.json().catch(() => ({}))
+        setFormStatus({ type: "error", message: error.error || "Failed to submit. Please try again." })
       }
     } catch (error) {
       let errorMessage = "An unexpected error occurred. Please check your internet connection and try again."
@@ -152,6 +117,25 @@ export default function RegisterPage() {
         </div>
       </section>
 
+      {showBanner && (
+        <div className="px-4">
+          <div className="max-w-3xl mx-auto -mt-10 mb-6 bg-amber-100 border border-amber-200 text-amber-900 rounded-lg shadow-lg p-4 flex items-start gap-3">
+            <div className="mt-0.5 h-3 w-3 rounded-full bg-amber-500 animate-pulse" />
+            <div className="flex-1">
+              <p className="font-semibold">Admissions are open — only a few seats left. Submit now to secure a spot.</p>
+              <p className="text-sm mt-1 text-amber-800">Phone number is required; everything else is optional for a quick start.</p>
+            </div>
+            <button
+              type="button"
+              className="text-amber-700 hover:text-amber-900 font-semibold"
+              onClick={() => setShowBanner(false)}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Registration Form */}
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">
@@ -161,9 +145,7 @@ export default function RegisterPage() {
                 <CardTitle className="text-2xl md:text-3xl font-bold text-gray-900">
                   Student Registration Form
                 </CardTitle>
-                <p className="text-gray-600 mt-2">
-                  Please fill out all required fields to begin the application process
-                </p>
+                <p className="text-gray-600 mt-2">Quick submission. Only phone number is required.</p>
               </CardHeader>
               <CardContent className="space-y-6">
                 {formStatus.type && formStatus.message && (
@@ -177,15 +159,32 @@ export default function RegisterPage() {
                 <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                   {/* Student Information */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Student Information</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Contact</h3>
 
                     <div className="space-y-2">
-                      <Label htmlFor="student_name">Student Full Name *</Label>
+                      <Label htmlFor="phone">Phone Number *</Label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        required
+                        value={formData.phone}
+                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        placeholder="Enter phone number (e.g., +251912345678)"
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Student Information (Optional)</h3>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="student_name">Student Full Name</Label>
                       <Input
                         id="student_name"
                         name="student_name"
                         type="text"
-                        required
                         value={formData.student_name}
                         onChange={(e) => handleInputChange("student_name", e.target.value)}
                         placeholder="Enter student's full name"
@@ -194,15 +193,14 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="grade">Grade Level *</Label>
+                      <Label htmlFor="grade">Grade Level</Label>
                       <Select
                         name="grade"
-                        required
                         value={formData.grade}
                         onValueChange={(value) => handleInputChange("grade", value)}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select grade level" />
+                          <SelectValue placeholder="Select grade level (optional)" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="kindergarten">Kindergarten</SelectItem>
@@ -225,15 +223,14 @@ export default function RegisterPage() {
 
                   {/* Parent/Guardian Information */}
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Parent/Guardian Information</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Parent/Guardian Information (Optional)</h3>
 
                     <div className="space-y-2">
-                      <Label htmlFor="parent_name">Parent/Guardian Full Name *</Label>
+                      <Label htmlFor="parent_name">Parent/Guardian Full Name</Label>
                       <Input
                         id="parent_name"
                         name="parent_name"
                         type="text"
-                        required
                         value={formData.parent_name}
                         onChange={(e) => handleInputChange("parent_name", e.target.value)}
                         placeholder="Enter parent/guardian full name"
@@ -242,12 +239,11 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email Address *</Label>
+                      <Label htmlFor="email">Email Address</Label>
                       <Input
                         id="email"
                         name="email"
                         type="email"
-                        required
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
                         placeholder="Enter email address"
@@ -294,7 +290,7 @@ export default function RegisterPage() {
                       disabled={isSubmitting}
                       className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 text-lg font-semibold rounded-lg disabled:opacity-50"
                     >
-                      {isSubmitting ? "Initiating Payment..." : "Pay Registration Fee (150 ETB)"}
+                      {isSubmitting ? "Submitting..." : "Submit"}
                     </Button>
                   </div>
 

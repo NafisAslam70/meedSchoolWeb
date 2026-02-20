@@ -8,19 +8,19 @@ export async function POST(req: Request) {
 
     const { student_name, grade, parent_name, email, phone, message, tx_ref, payment_status } = body
 
-    if (!student_name || !email || !phone) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    if (!phone) {
+      return NextResponse.json({ error: "Phone number is required" }, { status: 400 })
     }
 
     await db.insert(registrations).values({
-      studentName: student_name,
-      grade,
-      parentName: parent_name,
-      email,
+      studentName: student_name || "",
+      grade: grade || "",
+      parentName: parent_name || "",
+      email: email || "",
       phone,
       message: message || "",
       txRef: tx_ref || null,
-      paymentStatus: payment_status || "completed",
+      paymentStatus: payment_status || "not_required",
     })
 
     return NextResponse.json({ success: true })

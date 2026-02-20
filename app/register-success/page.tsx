@@ -38,7 +38,7 @@ export default function RegisterSuccessPage() {
         const message = searchParams.get("message") || ""
         const tx_ref = searchParams.get("tx_ref") || ""
 
-        if (!student_name || !email || !phone || !tx_ref) {
+        if (!phone) {
           setSaveStatus({
             type: "error",
             message: "Missing required registration information. Please contact the school.",

@@ -11,22 +11,22 @@ export async function submitRegistration(formData: FormData) {
   const phone = formData.get("phone") as string
   const message = (formData.get("message") as string) || ""
 
-  if (!studentName || !grade || !parentName || !email || !phone) {
+  if (!phone) {
     return {
       success: false,
-      message: "Please fill in all required fields.",
+      message: "Phone number is required to submit.",
     }
   }
 
   try {
     await db.insert(registrations).values({
-      studentName,
-      grade,
-      parentName,
-      email,
+      studentName: studentName || "",
+      grade: grade || "",
+      parentName: parentName || "",
+      email: email || "",
       phone,
       message,
-      paymentStatus: "pending",
+      paymentStatus: "not_required",
     })
 
     return {

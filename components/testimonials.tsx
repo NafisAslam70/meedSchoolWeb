@@ -106,11 +106,13 @@ export default function TestimonialsSection() {
             >
               <div className="flex items-center gap-3 mb-3">
                 {testimonials[activeIndex].image && (
-                  <img
-                    src={testimonials[activeIndex].image!}
-                    alt={testimonials[activeIndex].author}
-                    className="h-10 w-10 rounded-full object-cover border border-white/20"
-                  />
+                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-emerald-400/60">
+                    <img
+                      src={testimonials[activeIndex].image!}
+                      alt={testimonials[activeIndex].author}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 )}
                 <div>
                   <div className="font-bold text-white text-sm">{testimonials[activeIndex].author}</div>
@@ -155,11 +157,13 @@ export default function TestimonialsSection() {
             >
               <div className="flex items-center gap-3 mb-4">
                 {testimonial.image && (
-                  <img
-                    src={testimonial.image}
-                    alt={testimonial.author}
-                    className="h-10 w-10 rounded-full object-cover border border-white/20"
-                  />
+                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-emerald-400/60">
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.author}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 )}
                 <div>
                   <div className="font-bold text-white text-sm">{testimonial.author}</div>

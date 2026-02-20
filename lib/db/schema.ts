@@ -9,7 +9,7 @@ export const registrations = pgTable("registrations", {
   phone: varchar("phone", { length: 50 }).notNull(),
   message: text("message"),
   txRef: varchar("tx_ref", { length: 100 }),
-  paymentStatus: varchar("payment_status", { length: 50 }).default("pending"),
+  paymentStatus: varchar("payment_status", { length: 50 }).default("not_required"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 })
 
