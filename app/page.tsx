@@ -54,7 +54,109 @@ export default function HomePage() {
   const [cms, setCms] = useState<CMSHome | null>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [activeSection, setActiveSection] = useState("Hero")
+  const [applyModalOpen, setApplyModalOpen] = useState(false)
   const [showWelcomeModal, setShowWelcomeModal] = useState(false)
+  const [fullName, setFullName] = useState("")
+  const [phone, setPhone] = useState("")
+  const [note, setNote] = useState("")
+  const [applySubmitting, setApplySubmitting] = useState(false)
+  const [applyStatus, setApplyStatus] = useState<string | null>(null)
+  const [showThanks, setShowThanks] = useState(false)
+  const langCopy = {
+    en: {
+      badge: "Admissions open — few seats left",
+      headline: "Secure your child's seat this term",
+      body: "Share your phone number and our admissions guide will call you. No fees, no paperwork to start — just a quick hello.",
+      callback: "Call-back priority",
+      seats: "Limited seats remaining",
+      fee: "Zero registration fee",
+      apply: "Apply in 30 seconds",
+      maybe: "Maybe later",
+      quickApply: "Quick Apply",
+      close: "Close",
+      fullName: "Full name",
+      phone: "Phone number",
+      email: "Email (optional)",
+      note: "Child's grade / note",
+      submit: "Submit Application",
+      promise: "We’ll call you within 6 hours.",
+      optionalToggle: "Add extra details (optional)",
+      success: "Thanks! Our team will call you shortly.",
+      phoneRequired: "Please share a phone number.",
+      thanksTitle: "Thanks! We’ve got your details.",
+      thanksBody: "Our admissions guide will call you soon. Meanwhile, feel free to explore the site.",
+    },
+    hi: {
+      badge: "प्रवेश खुले हैं — कुछ सीटें बाकी",
+      headline: "इस सत्र में अपने बच्चे की सीट सुनिश्चित करें",
+      body: "अपना फ़ोन नंबर साझा करें, हमारा एडमिशन गाइड आपको कॉल करेगा। कोई शुल्क नहीं, कोई कागज़ी कार्रवाई नहीं — बस एक त्वरित नमस्ते।",
+      callback: "कॉल-बैक प्राथमिकता",
+      seats: "सीमित सीटें शेष",
+      fee: "शून्य पंजीकरण शुल्क",
+      apply: "30 सेकंड में आवेदन करें",
+      maybe: "बाद में",
+      quickApply: "त्वरित आवेदन",
+      close: "बंद करें",
+      fullName: "पूरा नाम",
+      phone: "फ़ोन नंबर",
+      email: "ईमेल (वैकल्पिक)",
+      note: "कक्षा / नोट",
+      submit: "आवेदन भेजें",
+      promise: "हम 6 घंटों के भीतर कॉल करेंगे।",
+      optionalToggle: "अतिरिक्त विवरण जोड़ें (वैकल्पिक)",
+      success: "धन्यवाद! हम जल्द ही कॉल करेंगे।",
+      phoneRequired: "कृपया फ़ोन नंबर दें।",
+      thanksTitle: "धन्यवाद! हमें आपके विवरण मिल गए हैं।",
+      thanksBody: "हमारा एडमिशन गाइड जल्द कॉल करेगा। तब तक साइट देखें।",
+    },
+    ur: {
+      badge: "داخلے جاری ہیں — چند نشستیں باقی",
+      headline: "اس ٹرم میں اپنے بچے کی نشست محفوظ کریں",
+      body: "اپنا فون نمبر شیئر کریں، ہمارا ایڈمشن گائیڈ آپ کو کال کرے گا۔ کوئی فیس نہیں، کوئی کاغذی کارروائی نہیں — بس ایک مختصر سلام۔",
+      callback: "کال بیک ترجیح",
+      seats: "محدود نشستیں باقی",
+      fee: "زیرو رجسٹریشن فیس",
+      apply: "30 سیکنڈ میں اپلائی کریں",
+      maybe: "بعد میں",
+      quickApply: "فوری درخواست",
+      close: "بند کریں",
+      fullName: "پورا نام",
+      phone: "فون نمبر",
+      email: "ای میل (اختیاری)",
+      note: "بچے کی جماعت / نوٹ",
+      submit: "درخواست جمع کریں",
+      promise: "ہم 6 گھنٹوں میں کال کریں گے۔",
+      optionalToggle: "اضافی تفصیل شامل کریں (اختیاری)",
+      success: "شکریہ! ہم جلد رابطہ کریں گے۔",
+      phoneRequired: "براہ کرم فون نمبر دیں۔",
+      thanksTitle: "شکریہ! ہمیں آپ کی معلومات مل گئیں۔",
+      thanksBody: "ایڈمشن گائیڈ جلد کال کرے گا۔ تب تک سائٹ دیکھیں۔",
+    },
+    bn: {
+      badge: "ভর্তি চলছে — কয়েকটি আসন বাকি",
+      headline: "এই টার্মে আপনার সন্তানের আসন নিশ্চিত করুন",
+      body: "আপনার ফোন নম্বর দিন, আমাদের ভর্তি সহায়ক কল করবে। কোনো ফি নয়, কোনো কাগজপত্র নয় — শুধু একটুখানি কথা।",
+      callback: "কল-ব্যাক প্রায়োরিটি",
+      seats: "সীমিত আসন বাকি",
+      fee: "শূন্য রেজিস্ট্রেশন ফি",
+      apply: "৩০ সেকেন্ডে আবেদন",
+      maybe: "পরে",
+      quickApply: "দ্রুত আবেদন",
+      close: "বন্ধ করুন",
+      fullName: "পুরো নাম",
+      phone: "ফোন নম্বর",
+      email: "ইমেল (ঐচ্ছিক)",
+      note: "সন্তানের শ্রেণি / নোট",
+      submit: "আবেদন পাঠান",
+      promise: "আমরা ৬ ঘণ্টার মধ্যে কল করব।",
+      optionalToggle: "অতিরিক্ত তথ্য যোগ করুন (ঐচ্ছিক)",
+      success: "ধন্যবাদ! আমরা শীঘ্রই কল করব।",
+      phoneRequired: "দয়া করে ফোন নম্বর দিন।",
+      thanksTitle: "ধন্যবাদ! আপনার তথ্য পেয়েছি।",
+      thanksBody: "অ্যাডমিশন গাইড শিগগিরই কল করবে। ততক্ষণ সাইট ঘুরে দেখুন।",
+    },
+  } as const
+  const copy = langCopy[language] || langCopy.en
 
   useEffect(() => {
     fetch("/api/cms/home")
@@ -66,11 +168,7 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
-    const seen = typeof window !== "undefined" ? sessionStorage.getItem("homeLandingModalSeen") : "yes"
-    if (!seen) {
-      setShowWelcomeModal(true)
-      sessionStorage.setItem("homeLandingModalSeen", "yes")
-    }
+    setShowWelcomeModal(true)
   }, [])
 
   useEffect(() => {
@@ -139,6 +237,11 @@ export default function HomePage() {
         : undefined,
     }))
   }, [cms, language])
+
+  const welcomeImage =
+    (cms as any)?.welcomeImageUrl ||
+    (cms?.slides?.[0]?.image?.image ? urlFor(cms.slides[0].image.image).width(1200).height(900).url() : undefined) ||
+    "/images/students-group.jpg"
 
   const ecosystemGallery = useMemo(() => {
     if (cms?.ecosystemGallery?.length) {
@@ -260,31 +363,29 @@ export default function HomePage() {
       <Navigation />
 
       {showWelcomeModal && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center px-4">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center px-3 sm:px-4">
           <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-[3px]" onClick={() => setShowWelcomeModal(false)} />
-          <div className="relative w-full max-w-3xl overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-800 text-white border border-emerald-500/30">
-            <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.2),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(16,185,129,0.35),transparent_42%)]" />
-            <div className="relative p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8">
+          <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-slate-950 via-emerald-900 to-teal-900 text-white border border-emerald-500/30">
+            <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.2),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(16,185,129,0.35),transparent_42%)]" />
+            <div className="relative p-5 sm:p-6 flex flex-col md:flex-row gap-5">
               <div className="flex-1 space-y-3">
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.08em]">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em]">
                   <Sparkles className="h-4 w-4" />
-                  Admissions open — few seats left
+                  {copy.badge}
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold leading-tight">Secure your child's seat this term</h2>
-                <p className="text-emerald-50/90 text-sm md:text-base leading-relaxed">
-                  Share your phone number and our admissions guide will call you within 6 hours. No fees, no paperwork to start—just a quick hello.
-                </p>
+                <h2 className="text-xl sm:text-2xl font-bold leading-tight">{copy.headline}</h2>
+                <p className="text-emerald-50/90 text-xs sm:text-sm leading-relaxed">{copy.body}</p>
                 <div className="flex flex-wrap gap-2">
                   {[
                     { code: "en", label: "English" },
+                    { code: "bn", label: "বাংলা" },
                     { code: "hi", label: "हिंदी" },
                     { code: "ur", label: "اردو" },
-                    { code: "bn", label: "বাংলা" },
                   ].map((l) => (
                     <button
                       key={l.code}
                       onClick={() => setLanguage(l.code as any)}
-                      className={`px-3 py-1 rounded-full border text-xs font-semibold ${
+                      className={`px-3 py-1 rounded-full border text-[11px] font-semibold ${
                         language === l.code
                           ? "bg-white text-emerald-800 border-white"
                           : "border-white/40 text-white hover:bg-white/10"
@@ -294,48 +395,192 @@ export default function HomePage() {
                     </button>
                   ))}
                 </div>
-                <div className="flex flex-wrap gap-2 text-sm md:text-base font-semibold text-emerald-100">
+                <div className="flex flex-wrap gap-2 text-[12px] sm:text-sm font-semibold text-emerald-100">
                   <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15">
                     <Phone className="h-4 w-4" />
-                    Call-back priority
+                    {copy.callback}
                   </span>
                   <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15">
                     <Users className="h-4 w-4" />
-                    Limited seats remaining
+                    {copy.seats}
                   </span>
                   <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15">
                     <Shield className="h-4 w-4" />
-                    Zero registration fee
+                    {copy.fee}
                   </span>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 pt-1">
-                  <Link href="/register" onClick={() => setShowWelcomeModal(false)}>
-                    <Button className="w-full sm:w-auto bg-white text-emerald-800 hover:bg-emerald-50 shadow-lg shadow-emerald-900/30">
-                      Apply in 30 seconds
-                    </Button>
-                  </Link>
+                  <Button
+                    className="w-full sm:w-auto bg-white text-emerald-800 hover:bg-emerald-50 shadow-lg shadow-emerald-900/30"
+                    onClick={() => { setApplyModalOpen(true); setShowWelcomeModal(false) }}
+                  >
+                    {copy.apply}
+                  </Button>
                   <Button
                     variant="outline"
                     className="w-full sm:w-auto border-white/60 text-white hover:bg-white/10"
                     onClick={() => setShowWelcomeModal(false)}
                   >
-                    Maybe later
+                    {copy.maybe}
                   </Button>
                 </div>
               </div>
-              <div className="w-full md:w-64 lg:w-72 h-48 md:h-auto relative overflow-hidden rounded-xl border border-white/15 bg-white/10 flex items-center justify-center">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.25),transparent_40%),radial-gradient(circle_at_70%_70%,rgba(16,185,129,0.35),transparent_45%)]" />
-                <div className="relative text-center px-4 py-6 space-y-3">
-                  <div className="text-5xl font-black tracking-tight">6h</div>
-                  <div className="text-sm uppercase tracking-[0.22em] text-emerald-50/80">Call-back Window</div>
-                  <div className="text-xs text-emerald-50/70 leading-relaxed">Submit now to get priority counseling and tour scheduling.</div>
-                </div>
+              <div className="w-full md:w-60 lg:w-72 h-40 md:h-auto relative overflow-hidden rounded-xl border border-white/15 bg-white/10 flex items-center">
+                <img
+                  src={welcomeImage}
+                  alt="Students group"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
             <button
               aria-label="Close"
               onClick={() => setShowWelcomeModal(false)}
               className="absolute top-3 right-3 text-white/80 hover:text-white focus:outline-none text-xl"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
+      {applyModalOpen && (
+        <div className="fixed inset-0 z-[130] flex items-center justify-center px-3 sm:px-4">
+          <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-[3px]" onClick={() => setApplyModalOpen(false)} />
+          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <p className="text-sm font-semibold text-gray-900">{copy.quickApply}</p>
+              </div>
+              <button onClick={() => setApplyModalOpen(false)} aria-label={copy.close} className="text-gray-500 hover:text-gray-700">
+                ×
+              </button>
+            </div>
+            <form
+              className="p-4 space-y-3"
+              onSubmit={async (e) => {
+                e.preventDefault()
+                if (!phone.trim()) {
+                  setApplyStatus(copy.phoneRequired)
+                  return
+                }
+                setApplySubmitting(true)
+                setApplyStatus(null)
+                try {
+                  const res = await fetch("/api/intake", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      student_name: "",
+                      grade: "",
+                      parent_name: fullName,
+                      email: "",
+                      phone,
+                      note,
+                      source: "homepage-popup",
+                      payment_status: "not_required",
+                    }),
+                  })
+                  if (!res.ok) {
+                    const data = await res.json().catch(() => ({}))
+                    throw new Error(data.error || "Failed to submit")
+                  }
+                  setApplyStatus(copy.success)
+                  setFullName("")
+                  setPhone("")
+                  setNote("")
+                  setTimeout(() => {
+                    setApplyModalOpen(false)
+                    setShowThanks(true)
+                  }, 600)
+                } catch (err) {
+                  setApplyStatus(err instanceof Error ? err.message : "Something went wrong")
+                } finally {
+                  setApplySubmitting(false)
+                }
+              }}
+            >
+              <input
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                placeholder={copy.fullName}
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+              <input
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                placeholder={copy.phone}
+                inputMode="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+              <details className="border border-gray-200 rounded-lg">
+                <summary className="px-3 py-2 text-sm font-semibold text-gray-700 cursor-pointer">
+                  {copy.optionalToggle}
+                </summary>
+                <div className="px-3 pb-3">
+                  <textarea
+                    className="w-full mt-2 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    rows={3}
+                    placeholder={copy.note}
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                  />
+                </div>
+              </details>
+              <Button
+                type="submit"
+                disabled={applySubmitting}
+                className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-semibold py-2.5 disabled:opacity-70"
+              >
+                {applySubmitting ? "Sending..." : copy.submit}
+              </Button>
+              <p className="text-[11px] text-center" style={{ color: applyStatus ? "#059669" : "#6b7280" }}>
+                {applyStatus || copy.promise}
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showThanks && (
+        <div className="fixed inset-0 z-[140] flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm" onClick={() => setShowThanks(false)} />
+          <div className="relative w-full max-w-md rounded-2xl overflow-hidden shadow-2xl bg-white">
+            <div className="grid grid-cols-1 sm:grid-cols-2">
+              <div className="p-5 flex flex-col gap-3">
+                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 text-emerald-700 px-3 py-1 text-xs font-semibold">
+                  <Sparkles className="h-4 w-4" />
+                  {t("Admissions")}
+                </div>
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight">
+                  {copy.thanksTitle}
+                </h3>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {copy.thanksBody}
+                </p>
+                <div className="flex gap-2 pt-1">
+                  <Button className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white" onClick={() => setShowThanks(false)}>
+                    {t("Close")}
+                  </Button>
+                  <Button variant="outline" className="flex-1" asChild>
+                    <Link href="#contact">{t("Contact Us")}</Link>
+                  </Button>
+                </div>
+              </div>
+              <div className="hidden sm:block relative bg-gradient-to-br from-emerald-500 to-teal-500">
+                <img
+                  src={welcomeImage}
+                  alt="Students celebrating"
+                  className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/50 via-emerald-700/40 to-teal-800/50" />
+              </div>
+            </div>
+            <button
+              aria-label="Close"
+              onClick={() => setShowThanks(false)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-xl"
             >
               ×
             </button>
@@ -386,9 +631,8 @@ export default function HomePage() {
       </section>
 
       {/* Five Guiding Principles */}
-      <section className="relative py-14 md:py-20 bg-gray-50 overflow-hidden reveal-on-scroll" data-reveal data-section-label="Principles">
-        <WaveTop color="#f8fafc" />
-        <WaveBottom color="#ecfeff" />
+      <section className="relative py-14 md:py-20 bg-gradient-to-br from-sky-50 via-cyan-50 to-emerald-50 reveal-on-scroll" data-reveal data-section-label="Principles">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(56,189,248,0.14),transparent_35%),radial-gradient(circle_at_80%_70%,rgba(16,185,129,0.14),transparent_40%)]" />
         <div className="container mx-auto px-4 relative z-10">
           {storyImages.length > 4 && (
             <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-3 max-w-6xl mx-auto mb-8 md:mb-10">

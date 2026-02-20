@@ -5,6 +5,7 @@ import { contactPage } from "./contact"
 import { admissionsPage, pricingPage, programPage } from "./collections"
 import { cta, heroSlide, imageWithAlt, localizedString, localizedText, principle, richBlock, stat } from "./objects"
 import { siteSettings, navLink, socialLink } from "./site"
+import { lead } from "./lead"
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -18,6 +19,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     admissionsPage,
     pricingPage,
     contactPage,
+    lead,
     // Objects
     imageWithAlt,
     localizedString,
